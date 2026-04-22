@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRoute, useRouter } from 'vue-router'
 import { useCategoriesStore } from '@/stores/categories'
 import DomainCard from '@/components/DomainCard.vue'
 import { ChevronDown } from 'lucide-vue-next'
 
+const route = useRoute()
+const router = useRouter()
 const store = useCategoriesStore()
 const { list, loading } = storeToRefs(store)
 
@@ -12,13 +15,16 @@ const expandedSlug = ref<string | null>(null)
 
 function toggle(slug: string) {
   expandedSlug.value = expandedSlug.value === slug ? null : slug
+  router.replace({
+    query: expandedSlug.value ? { category: expandedSlug.value } : {},
+  })
 }
 
 onMounted(async () => {
   await store.fetchAll()
-  if (list.value.length && !expandedSlug.value) {
-    expandedSlug.value = list.value[0].slug
-  }
+  const fromQuery = typeof route.query.category === 'string' ? route.query.category : null
+  const known = fromQuery && list.value.some((c) => c.slug === fromQuery)
+  expandedSlug.value = known ? fromQuery : (list.value[0]?.slug ?? null)
 })
 </script>
 
@@ -89,7 +95,12 @@ onMounted(async () => {
                 v-else
                 class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
               >
-                <DomainCard v-for="d in cat.domains" :key="d.id" :domain="d" />
+                <DomainCard
+                  v-for="d in cat.domains"
+                  :key="d.id"
+                  :domain="d"
+                  :category-slug="cat.slug"
+                />
               </div>
             </div>
           </div>

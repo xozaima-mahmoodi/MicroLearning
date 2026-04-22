@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { computed } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import BackButton from '@/components/BackButton.vue'
+
+const route = useRoute()
+const showBack = computed(() => route.name !== 'home')
 </script>
 
 <template>
@@ -14,6 +19,9 @@ import { RouterLink, RouterView } from 'vue-router'
     </header>
 
     <main class="mx-auto max-w-6xl px-6 py-10">
+      <div v-if="showBack" class="mb-6 flex justify-start">
+        <BackButton />
+      </div>
       <RouterView />
     </main>
 

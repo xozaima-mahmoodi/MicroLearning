@@ -19,7 +19,13 @@ import {
 } from 'lucide-vue-next'
 import type { Domain } from '@/types'
 
-const props = defineProps<{ domain: Domain }>()
+const props = defineProps<{ domain: Domain; categorySlug?: string | null }>()
+
+const linkTo = computed(() => ({
+  name: 'domain' as const,
+  params: { slug: props.domain.slug },
+  query: props.categorySlug ? { from: props.categorySlug } : {},
+}))
 
 const ICON_MAP: Record<string, LucideIcon> = {
   brain: Brain,
@@ -73,7 +79,7 @@ const iconComponent = computed<LucideIcon>(() =>
 
 <template>
   <RouterLink
-    :to="{ name: 'domain', params: { slug: domain.slug } }"
+    :to="linkTo"
     :class="[
       'group block rounded-2xl border border-slate-200 border-t-4 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-sky-400',
       palette.border,

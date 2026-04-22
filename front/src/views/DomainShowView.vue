@@ -34,16 +34,24 @@ async function loadConcept(slug: string) {
 }
 
 function openConcept(slug: string) {
+  // push: opening a modal creates a new history entry so the
+  // physical browser-back key (and the hierarchical BackButton)
+  // can close the modal as a distinct step.
   router.push({ query: { ...route.query, concept: slug } })
 }
 
 function closeConcept() {
+  // replace: closing must not add a second history entry; otherwise
+  // pressing Back would walk into the prior `?concept=` URL and
+  // re-open the modal.
   const { concept: _omit, ...rest } = route.query
-  router.push({ query: rest })
+  router.replace({ query: rest })
 }
 
 function navigateConcept(slug: string) {
-  openConcept(slug)
+  // replace: chip-driven navigation between concepts swaps modal
+  // contents in place rather than stacking each one in history.
+  router.replace({ query: { ...route.query, concept: slug } })
 }
 
 const activeSlug = computed(() => (typeof route.query.concept === 'string' ? route.query.concept : null))
