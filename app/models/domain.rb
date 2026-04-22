@@ -4,6 +4,7 @@ class Domain < ApplicationRecord
 
   friendly_id :name, use: [ :slugged, :history ]
 
+  belongs_to :category, optional: true
   has_many :concepts, -> { order(:position, :difficulty_level, :id) }, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true

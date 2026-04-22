@@ -11,6 +11,14 @@ export interface Domain {
   icon: string | null;
 }
 
+export interface Category {
+  id: string;
+  slug: string;
+  title: string;
+  position: number;
+  domains: Domain[];
+}
+
 export interface ConceptSummary {
   id: string;
   slug: string;

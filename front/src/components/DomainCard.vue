@@ -8,6 +8,13 @@ import {
   TrendingUp,
   Globe,
   BookOpen,
+  Lightbulb,
+  Scroll,
+  Languages,
+  Scale,
+  Cpu,
+  Briefcase,
+  Megaphone,
   type LucideIcon,
 } from 'lucide-vue-next'
 import type { Domain } from '@/types'
@@ -20,6 +27,14 @@ const ICON_MAP: Record<string, LucideIcon> = {
   landmark: Landmark,
   'trending-up': TrendingUp,
   globe: Globe,
+  lightbulb: Lightbulb,
+  scroll: Scroll,
+  'book-open': BookOpen,
+  languages: Languages,
+  scale: Scale,
+  cpu: Cpu,
+  briefcase: Briefcase,
+  megaphone: Megaphone,
 }
 
 type Palette = { iconText: string; iconBg: string; border: string; ring: string }
@@ -30,6 +45,14 @@ const COLOR_MAP: Record<string, Palette> = {
   'rose-500':    { iconText: 'text-rose-600',    iconBg: 'bg-rose-50',    border: 'border-t-rose-500',    ring: 'ring-rose-100' },
   'emerald-500': { iconText: 'text-emerald-600', iconBg: 'bg-emerald-50', border: 'border-t-emerald-500', ring: 'ring-emerald-100' },
   'amber-500':   { iconText: 'text-amber-600',   iconBg: 'bg-amber-50',   border: 'border-t-amber-500',   ring: 'ring-amber-100' },
+  'indigo-500':  { iconText: 'text-indigo-600',  iconBg: 'bg-indigo-50',  border: 'border-t-indigo-500',  ring: 'ring-indigo-100' },
+  'orange-500':  { iconText: 'text-orange-600',  iconBg: 'bg-orange-50',  border: 'border-t-orange-500',  ring: 'ring-orange-100' },
+  'pink-500':    { iconText: 'text-pink-600',    iconBg: 'bg-pink-50',    border: 'border-t-pink-500',    ring: 'ring-pink-100' },
+  'cyan-500':    { iconText: 'text-cyan-600',    iconBg: 'bg-cyan-50',    border: 'border-t-cyan-500',    ring: 'ring-cyan-100' },
+  'yellow-500':  { iconText: 'text-yellow-600',  iconBg: 'bg-yellow-50',  border: 'border-t-yellow-500',  ring: 'ring-yellow-100' },
+  'fuchsia-500': { iconText: 'text-fuchsia-600', iconBg: 'bg-fuchsia-50', border: 'border-t-fuchsia-500', ring: 'ring-fuchsia-100' },
+  'teal-500':    { iconText: 'text-teal-600',    iconBg: 'bg-teal-50',    border: 'border-t-teal-500',    ring: 'ring-teal-100' },
+  'red-500':     { iconText: 'text-red-600',     iconBg: 'bg-red-50',     border: 'border-t-red-500',     ring: 'ring-red-100' },
 }
 
 const FALLBACK: Palette = {

@@ -1,6 +1,13 @@
 # Seed idempotently with find_or_create_by! so re-running is safe.
 
+CATEGORIES = [
+  { slug: "social-sciences",  title: "علوم اجتماعی",           position: 0 },
+  { slug: "humanities",       title: "علوم انسانی اصیل",       position: 1 },
+  { slug: "interdisciplinary", title: "مطالعات میان‌رشته‌ای",   position: 2 }
+]
+
 DOMAINS = [
+  # ---------- Social Sciences ----------
   {
     slug: "psychology",
     name: "روانشناسی",
@@ -8,6 +15,7 @@ DOMAINS = [
     position: 0,
     color: "violet-500",
     icon: "brain",
+    category_slug: "social-sciences",
     concepts: [
       {
         slug: "zehn-agahi",
@@ -46,6 +54,7 @@ DOMAINS = [
     position: 1,
     color: "sky-500",
     icon: "users",
+    category_slug: "social-sciences",
     concepts: [
       {
         slug: "farhang",
@@ -84,6 +93,7 @@ DOMAINS = [
     position: 2,
     color: "rose-500",
     icon: "landmark",
+    category_slug: "social-sciences",
     concepts: [
       {
         slug: "ghodrat",
@@ -122,6 +132,7 @@ DOMAINS = [
     position: 3,
     color: "emerald-500",
     icon: "trending-up",
+    category_slug: "social-sciences",
     concepts: [
       {
         slug: "arze-taghaza",
@@ -160,6 +171,7 @@ DOMAINS = [
     position: 4,
     color: "amber-500",
     icon: "globe",
+    category_slug: "social-sciences",
     concepts: [
       {
         slug: "farhang-paziri",
@@ -190,8 +202,100 @@ DOMAINS = [
         extended_content: "نسبی‌گرایی فرهنگی (Cultural Relativism) در برابر قوم‌مداری می‌ایستد و می‌گوید معیارهای یک فرهنگ را نمی‌توان بی‌چون‌وچرا بر فرهنگی دیگر تحمیل کرد. این رویکرد، میراث قوم‌نگاری و مطالعه خویشاوندی است و پرسش‌های اخلاقی مهمی درباره حقوق جهانی بشر پیش می‌کشد."
       }
     ]
+  },
+
+  # ---------- Humanities (placeholders) ----------
+  {
+    slug: "philosophy",
+    name: "فلسفه",
+    description: "کاوش بنیادی درباره هستی، دانش، ارزش و خرد.",
+    position: 0,
+    color: "indigo-500",
+    icon: "lightbulb",
+    category_slug: "humanities",
+    concepts: []
+  },
+  {
+    slug: "history",
+    name: "تاریخ",
+    description: "روایت و تحلیل گذشته انسان و تحولات جوامع در طول زمان.",
+    position: 1,
+    color: "orange-500",
+    icon: "scroll",
+    category_slug: "humanities",
+    concepts: []
+  },
+  {
+    slug: "literature",
+    name: "ادبیات",
+    description: "مطالعه متون ادبی، سبک‌ها و سنت‌های خلاقیت زبانی.",
+    position: 2,
+    color: "pink-500",
+    icon: "book-open",
+    category_slug: "humanities",
+    concepts: []
+  },
+  {
+    slug: "linguistics",
+    name: "زبان‌شناسی",
+    description: "بررسی علمی ساختار، کاربرد و تحول زبان‌های انسانی.",
+    position: 3,
+    color: "cyan-500",
+    icon: "languages",
+    category_slug: "humanities",
+    concepts: []
+  },
+  {
+    slug: "law",
+    name: "حقوق",
+    description: "مطالعه قواعد، نهادها و نظریه‌های حاکم بر روابط حقوقی.",
+    position: 4,
+    color: "yellow-500",
+    icon: "scale",
+    category_slug: "humanities",
+    concepts: []
+  },
+
+  # ---------- Interdisciplinary (placeholders) ----------
+  {
+    slug: "cognitive-science",
+    name: "علوم شناختی",
+    description: "مطالعه میان‌رشته‌ای ذهن، هوش و فرآیندهای شناختی.",
+    position: 0,
+    color: "fuchsia-500",
+    icon: "cpu",
+    category_slug: "interdisciplinary",
+    concepts: []
+  },
+  {
+    slug: "management",
+    name: "مدیریت",
+    description: "نظریه و عمل سازمان‌دهی منابع، افراد و تصمیم‌ها برای دستیابی به اهداف.",
+    position: 1,
+    color: "teal-500",
+    icon: "briefcase",
+    category_slug: "interdisciplinary",
+    concepts: []
+  },
+  {
+    slug: "communications",
+    name: "ارتباطات",
+    description: "مطالعه فرآیندها و ابزارهای تبادل پیام و معنا در جوامع انسانی.",
+    position: 2,
+    color: "red-500",
+    icon: "megaphone",
+    category_slug: "interdisciplinary",
+    concepts: []
   }
 ]
+
+categories_by_slug = CATEGORIES.to_h do |c_data|
+  category = Category.find_or_initialize_by(slug: c_data[:slug])
+  category.title    = c_data[:title]
+  category.position = c_data[:position]
+  category.save!
+  [ c_data[:slug], category ]
+end
 
 DOMAINS.each do |d_data|
   domain = Domain.find_or_initialize_by(slug: d_data[:slug])
@@ -200,6 +304,7 @@ DOMAINS.each do |d_data|
   domain.position    = d_data[:position]
   domain.color       = d_data[:color]
   domain.icon        = d_data[:icon]
+  domain.category    = categories_by_slug[d_data[:category_slug]]
   domain.save!
 
   concepts = d_data[:concepts].each_with_index.map do |c_data, idx|
@@ -244,4 +349,4 @@ Resource.find_or_create_by!(
   r.position = 1
 end
 
-puts "Seeded #{Domain.count} domain(s), #{Concept.count} concept(s), #{ConceptRelation.count} relation(s), #{Resource.count} resource(s)."
+puts "Seeded #{Category.count} categor(ies), #{Domain.count} domain(s), #{Concept.count} concept(s), #{ConceptRelation.count} relation(s), #{Resource.count} resource(s)."
