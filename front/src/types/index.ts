@@ -7,6 +7,8 @@ export interface Domain {
   name: string;
   description: string | null;
   position: number;
+  color: string | null;
+  icon: string | null;
 }
 
 export interface ConceptSummary {
