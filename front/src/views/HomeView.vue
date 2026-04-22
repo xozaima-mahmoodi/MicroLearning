@@ -12,9 +12,11 @@ onMounted(() => store.fetchAll())
 
 <template>
   <section>
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-800">حوزه‌های علوم اجتماعی</h1>
-      <p class="mt-2 text-slate-600">
+    <div class="mb-10">
+      <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
+        حوزه‌های علوم اجتماعی
+      </h1>
+      <p class="mt-3 text-base leading-8 text-slate-600 md:text-lg">
         یکی از حوزه‌ها را انتخاب کنید تا نقشه مفاهیم آن را از ساده‌ترین تا پیشرفته‌ترین دنبال کنید.
       </p>
     </div>

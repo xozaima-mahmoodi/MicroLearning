@@ -9,7 +9,7 @@ import { RouterLink, RouterView } from 'vue-router'
         <RouterLink to="/" class="text-xl font-bold text-slate-800 hover:text-sky-700">
           نقشه دانش علوم اجتماعی
         </RouterLink>
-        <nav class="text-sm text-slate-500">یادگیری خرد، ساختاریافته و فارسی</nav>
+        <nav class="text-sm text-slate-500">یادگیری خرد و ساختاریافته</nav>
       </div>
     </header>
 
