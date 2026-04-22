@@ -1,7 +1,7 @@
 class CategorySerializer
   include JSONAPI::Serializer
 
-  attributes :slug, :title, :position
+  attributes :slug, :title, :position, :color, :icon
 
   attribute :domains do |category|
     category.domains.order(:position, :id).map do |d|

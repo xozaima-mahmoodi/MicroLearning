@@ -16,6 +16,8 @@ export interface Category {
   slug: string;
   title: string;
   position: number;
+  color: string | null;
+  icon: string | null;
   domains: Domain[];
 }
 

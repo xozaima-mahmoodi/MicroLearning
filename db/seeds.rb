@@ -1,9 +1,9 @@
 # Seed idempotently with find_or_create_by! so re-running is safe.
 
 CATEGORIES = [
-  { slug: "social-sciences",  title: "علوم اجتماعی",           position: 0 },
-  { slug: "humanities",       title: "علوم انسانی اصیل",       position: 1 },
-  { slug: "interdisciplinary", title: "مطالعات میان‌رشته‌ای",   position: 2 }
+  { slug: "social-sciences",   title: "علوم اجتماعی",         position: 0, color: "blue-500",   icon: "layers" },
+  { slug: "humanities",        title: "علوم انسانی اصیل",     position: 1, color: "purple-500", icon: "feather" },
+  { slug: "interdisciplinary", title: "مطالعات میان‌رشته‌ای", position: 2, color: "lime-500",   icon: "network" }
 ]
 
 DOMAINS = [
@@ -293,6 +293,8 @@ categories_by_slug = CATEGORIES.to_h do |c_data|
   category = Category.find_or_initialize_by(slug: c_data[:slug])
   category.title    = c_data[:title]
   category.position = c_data[:position]
+  category.color    = c_data[:color]
+  category.icon     = c_data[:icon]
   category.save!
   [ c_data[:slug], category ]
 end
