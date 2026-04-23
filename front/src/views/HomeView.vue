@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import { useCategoriesStore } from '@/stores/categories'
 import DomainCard from '@/components/DomainCard.vue'
+import LoadingState from '@/components/LoadingState.vue'
 import { ChevronDown } from 'lucide-vue-next'
 import { paletteFor, iconFor } from '@/lib/palette'
 
@@ -38,14 +39,14 @@ onMounted(async () => {
   <section>
     <div class="mb-12 text-center md:mb-16 md:text-start">
       <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
-        نقشه دانش
+        میکرولرنینگ
       </h1>
       <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 md:mx-0 md:text-lg">
-        یک دسته را انتخاب کنید تا حوزه‌های آن آشکار شود و سپس از حوزه دلخواه، نقشه مفاهیم را دنبال کنید.
+        نقشه‌ی راه تو در دنیای دانش
       </p>
     </div>
 
-    <div v-if="loading && list.length === 0" class="text-slate-500">در حال بارگذاری…</div>
+    <LoadingState v-if="loading && list.length === 0" />
 
     <ul v-else class="space-y-6">
       <li

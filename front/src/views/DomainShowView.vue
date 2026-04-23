@@ -6,6 +6,7 @@ import { useConceptsStore } from '@/stores/concepts'
 import type { Concept, ConceptSummary, Domain } from '@/types'
 import ConceptListItem from '@/components/ConceptListItem.vue'
 import ConceptModal from '@/components/ConceptModal.vue'
+import LoadingState from '@/components/LoadingState.vue'
 
 const props = defineProps<{ slug: string }>()
 
@@ -18,10 +19,16 @@ const domain = ref<Domain | null>(null)
 const concepts = ref<ConceptSummary[]>([])
 const activeConcept = ref<Concept | null>(null)
 const modalLoading = ref(false)
+const domainLoading = ref(false)
 
 async function loadDomain() {
-  domain.value = await domainsStore.fetchBySlug(props.slug)
-  concepts.value = await domainsStore.fetchConcepts(props.slug)
+  domainLoading.value = true
+  try {
+    domain.value = await domainsStore.fetchBySlug(props.slug)
+    concepts.value = await domainsStore.fetchConcepts(props.slug)
+  } finally {
+    domainLoading.value = false
+  }
 }
 
 async function loadConcept(slug: string) {
@@ -80,12 +87,14 @@ watch(() => props.slug, async () => {
       <span>{{ domain?.name ?? slug }}</span>
     </nav>
 
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-800">{{ domain?.name }}</h1>
-      <p v-if="domain?.description" class="mt-2 text-slate-600">{{ domain.description }}</p>
+    <header v-if="domain" class="mb-8">
+      <h1 class="text-3xl font-bold text-slate-800">{{ domain.name }}</h1>
+      <p v-if="domain.description" class="mt-2 text-slate-600">{{ domain.description }}</p>
     </header>
 
-    <ol v-if="concepts.length" class="relative">
+    <LoadingState v-if="domainLoading && !domain" />
+
+    <ol v-else-if="concepts.length" class="relative">
       <div
         class="absolute top-10 bottom-10 w-0.5 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-200 start-[calc(1.25rem-1px)]"
         aria-hidden="true"
@@ -99,7 +108,7 @@ watch(() => props.slug, async () => {
       />
     </ol>
 
-    <div v-if="concepts.length === 0" class="rounded-xl border border-dashed border-slate-300 p-8 text-center text-slate-500">
+    <div v-else class="rounded-xl border border-dashed border-slate-300 p-8 text-center text-slate-500">
       هنوز مفهومی در این حوزه ثبت نشده است.
     </div>
 

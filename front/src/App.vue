@@ -12,10 +12,13 @@ const showBack = computed(() => route.name !== 'home')
 
     <header class="relative border-b border-white/60 bg-white/70 backdrop-blur">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <RouterLink to="/" class="text-xl font-bold text-slate-800 transition-colors hover:text-sky-700">
-          نقشه دانش علوم اجتماعی
+        <RouterLink
+          to="/"
+          class="text-sm font-semibold leading-snug text-slate-800 transition-colors hover:text-sky-700 md:text-base"
+        >
+          یادگیری خرد؛ برای ذهنی که می‌خواهد کلان ببیند
         </RouterLink>
-        <nav class="text-sm text-slate-500">یادگیری خرد و ساختاریافته</nav>
+        <nav class="hidden text-xs text-slate-500 md:block md:text-sm">ساختاریافته بیاموز، عمیق درک کن</nav>
       </div>
     </header>
 
@@ -27,7 +30,7 @@ const showBack = computed(() => route.name !== 'home')
     </main>
 
     <footer class="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-400">
-      ساخته شده برای یادگیری عمیق علوم اجتماعی
+      هوشمندانه‌تر بیاموز
     </footer>
   </div>
 </template>
