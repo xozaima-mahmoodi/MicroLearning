@@ -129,10 +129,10 @@ onBeforeUnmount(() => {
 <template>
   <section>
     <div class="mb-10 text-center md:mb-12 md:text-start">
-      <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
+      <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-slate-100 md:text-6xl">
         میکرولرنینگ
       </h1>
-      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 md:mx-0 md:text-lg">
+      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-400 md:mx-0 md:text-lg">
         نقشه‌ی راه تو در دنیای دانش
       </p>
     </div>
@@ -145,13 +145,13 @@ onBeforeUnmount(() => {
 
     <div
       v-else-if="noResults"
-      class="anim-fade-in-up mx-auto max-w-md rounded-2xl border border-dashed border-slate-300 bg-white/70 p-10 text-center backdrop-blur-sm"
+      class="anim-fade-in-up mx-auto max-w-md rounded-2xl border border-dashed border-slate-300 bg-white/70 p-10 text-center backdrop-blur-sm dark:border-white/15 dark:bg-white/5"
     >
-      <div class="mx-auto flex size-14 items-center justify-center rounded-full bg-slate-100">
-        <SearchX class="size-7 text-slate-400" :stroke-width="2" aria-hidden="true" />
+      <div class="mx-auto flex size-14 items-center justify-center rounded-full bg-slate-100 dark:bg-white/10">
+        <SearchX class="size-7 text-slate-400 dark:text-slate-400" :stroke-width="2" aria-hidden="true" />
       </div>
-      <p class="mt-4 text-base font-semibold text-slate-700">مفهومی با این عنوان پیدا نشد</p>
-      <p class="mt-1 text-sm text-slate-500">عبارت دیگری امتحان کنید یا املای کلمه را بررسی کنید.</p>
+      <p class="mt-4 text-base font-semibold text-slate-700 dark:text-slate-200">مفهومی با این عنوان پیدا نشد</p>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">عبارت دیگری امتحان کنید یا املای کلمه را بررسی کنید.</p>
     </div>
 
     <ul v-else class="space-y-6">
@@ -160,7 +160,7 @@ onBeforeUnmount(() => {
         :key="cat.id"
         :style="{ animationDelay: stagger(i) }"
         :class="[
-          'anim-fade-in-up overflow-hidden rounded-3xl transition-all duration-300 ease-out',
+          'anim-fade-in-up overflow-hidden rounded-3xl transition-all duration-300 ease-out dark:saturate-[1.1]',
           paletteOf(cat.color).gradient,
           paletteOf(cat.color).gradientGlow,
           isExpanded(cat.slug)
@@ -216,13 +216,13 @@ onBeforeUnmount(() => {
           <div class="min-h-0 overflow-hidden">
             <div
               :class="[
-                'bg-white/95 px-6 py-8 backdrop-blur-sm transition duration-300 ease-out md:px-8 md:py-10',
+                'bg-white/95 px-6 py-8 backdrop-blur-sm transition duration-300 ease-out dark:bg-slate-900/85 md:px-8 md:py-10',
                 isExpanded(cat.slug) ? 'translate-y-0 opacity-100' : '-translate-y-1 opacity-0',
               ]"
             >
               <div
                 v-if="cat.domains.length === 0"
-                class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-8 text-center text-slate-500"
+                class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-8 text-center text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-400"
               >
                 هنوز حوزه‌ای در این دسته ثبت نشده است.
               </div>
@@ -239,9 +239,9 @@ onBeforeUnmount(() => {
                   />
                   <p
                     v-if="cat.matchedConcepts[d.slug]?.length"
-                    class="px-1 text-xs leading-6 text-slate-500"
+                    class="px-1 text-xs leading-6 text-slate-500 dark:text-slate-400"
                   >
-                    <span class="font-semibold text-slate-600">یافته‌ها در مفاهیم: </span>
+                    <span class="font-semibold text-slate-600 dark:text-slate-300">یافته‌ها در مفاهیم: </span>
                     <span>
                       {{ cat.matchedConcepts[d.slug].map((c) => c.title).join('، ') }}
                     </span>
@@ -256,7 +256,7 @@ onBeforeUnmount(() => {
 
     <div
       v-if="!loading && !isSearching && list.length === 0"
-      class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-8 text-center text-slate-500"
+      class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-8 text-center text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-400"
     >
       هنوز دسته‌ای ثبت نشده است.
     </div>

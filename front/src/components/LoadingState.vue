@@ -18,7 +18,7 @@ withDefaults(defineProps<{ message?: string }>(), {
         />
         <span class="relative inline-flex size-2.5 rounded-full bg-sky-500" aria-hidden="true" />
       </span>
-      <p class="animate-pulse text-base font-medium text-slate-500 motion-reduce:animate-none md:text-lg">
+      <p class="animate-pulse text-base font-medium text-slate-500 motion-reduce:animate-none dark:text-slate-400 md:text-lg">
         {{ message }}
       </p>
     </div>

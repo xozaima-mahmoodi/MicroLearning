@@ -56,8 +56,10 @@ function toggleBookmark() {
     <!-- Card -->
     <div
       :class="[
-        'group relative overflow-hidden rounded-2xl border bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg',
-        isRead ? 'border-emerald-200' : 'border-slate-200 hover:border-slate-300',
+        'group relative overflow-hidden rounded-2xl border bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:bg-white/10 dark:shadow-black/30',
+        isRead
+          ? 'border-emerald-200 dark:border-emerald-400/30'
+          : 'border-slate-200 hover:border-slate-300 dark:border-white/10 dark:hover:border-white/20',
       ]"
     >
       <button
@@ -71,23 +73,23 @@ function toggleBookmark() {
         <div :class="['h-1.5 w-full', isRead ? 'bg-emerald-400' : tones.stripe]" aria-hidden="true" />
         <div class="p-5 pe-14">
           <div class="flex flex-wrap items-center gap-2">
-            <h4 :class="['text-lg font-bold transition-colors group-hover:text-sky-700', isRead ? 'text-slate-600' : 'text-slate-800']">
+            <h4 :class="['text-lg font-bold transition-colors group-hover:text-sky-700 dark:group-hover:text-sky-300', isRead ? 'text-slate-600 dark:text-slate-400' : 'text-slate-800 dark:text-slate-100']">
               {{ concept.title }}
             </h4>
             <DifficultyBadge :level="concept.difficulty_level" />
             <span
               v-if="isRead"
-              class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700"
+              class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300"
               title="این مفهوم را خوانده‌اید"
             >
               <Check class="size-3" :stroke-width="3" aria-hidden="true" />
               خوانده‌ شد
             </span>
           </div>
-          <p v-if="concept.brief_summary" class="mt-2 text-sm leading-7 text-slate-600">
+          <p v-if="concept.brief_summary" class="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-400">
             {{ concept.brief_summary }}
           </p>
-          <div class="mt-3 text-xs font-medium text-sky-700 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <div class="mt-3 text-xs font-medium text-sky-700 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:text-sky-300">
             جزئیات مفهوم ←
           </div>
         </div>
@@ -101,8 +103,8 @@ function toggleBookmark() {
         :class="[
           'absolute end-3 top-3 inline-flex size-9 items-center justify-center rounded-full border transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300',
           isBookmarked
-            ? 'border-amber-200 bg-amber-50 text-amber-600 hover:bg-amber-100'
-            : 'border-slate-200 bg-white text-slate-400 hover:border-amber-300 hover:text-amber-600',
+            ? 'border-amber-200 bg-amber-50 text-amber-600 hover:bg-amber-100 dark:border-amber-400/40 dark:bg-amber-400/15 dark:text-amber-300 dark:hover:bg-amber-400/25'
+            : 'border-slate-200 bg-white text-slate-400 hover:border-amber-300 hover:text-amber-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-400 dark:hover:border-amber-400/40 dark:hover:text-amber-300',
         ]"
         @click.stop="toggleBookmark"
       >

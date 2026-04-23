@@ -53,7 +53,7 @@ function toggleBookmark() {
 }
 
 function chipClass(_c: ConceptSummary) {
-  return 'inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-sky-400 hover:text-sky-700'
+  return 'inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-sky-400 hover:text-sky-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-sky-400/60 dark:hover:text-sky-300'
 }
 
 function onBackdropClick(e: MouseEvent) {
@@ -63,13 +63,13 @@ function onBackdropClick(e: MouseEvent) {
 
 <template>
   <div
-    class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm md:p-10"
+    class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm dark:bg-black/70 md:p-10"
     @click="onBackdropClick"
   >
-    <div class="relative w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl md:p-8">
+    <div class="relative w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl dark:border dark:border-white/10 dark:bg-slate-900 dark:shadow-black/40 md:p-8">
       <button
         type="button"
-        class="absolute end-4 top-4 inline-flex size-8 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+        class="absolute end-4 top-4 inline-flex size-8 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-100"
         aria-label="بستن"
         @click="emit('close')"
       >
@@ -77,7 +77,7 @@ function onBackdropClick(e: MouseEvent) {
       </button>
 
       <div class="flex flex-wrap items-center gap-3 pe-10">
-        <h2 class="text-2xl font-bold text-slate-800">{{ concept.title }}</h2>
+        <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ concept.title }}</h2>
         <DifficultyBadge :level="concept.difficulty_level" />
       </div>
 
@@ -90,8 +90,8 @@ function onBackdropClick(e: MouseEvent) {
           :class="[
             'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300',
             isRead
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-              : 'border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-700',
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-400/40 dark:bg-emerald-400/15 dark:text-emerald-300 dark:hover:bg-emerald-400/25'
+              : 'border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-emerald-400/40 dark:hover:text-emerald-300',
           ]"
           @click="toggleRead"
         >
@@ -107,8 +107,8 @@ function onBackdropClick(e: MouseEvent) {
           :class="[
             'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300',
             isBookmarked
-              ? 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
-              : 'border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:text-amber-700',
+              ? 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-400/40 dark:bg-amber-400/15 dark:text-amber-300 dark:hover:bg-amber-400/25'
+              : 'border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:text-amber-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-amber-400/40 dark:hover:text-amber-300',
           ]"
           @click="toggleBookmark"
         >
@@ -122,14 +122,14 @@ function onBackdropClick(e: MouseEvent) {
         </button>
       </div>
 
-      <p v-if="concept.brief_summary" class="mt-4 text-base leading-8 text-slate-700">
+      <p v-if="concept.brief_summary" class="mt-4 text-base leading-8 text-slate-700 dark:text-slate-300">
         {{ concept.brief_summary }}
       </p>
 
       <div v-if="concept.extended_content" class="mt-4">
         <button
           type="button"
-          class="inline-flex items-center gap-1 text-sm font-medium text-sky-700 hover:underline"
+          class="inline-flex items-center gap-1 text-sm font-medium text-sky-700 hover:underline dark:text-sky-300"
           :aria-expanded="showExtended"
           aria-controls="concept-extended-content"
           @click="showExtended = !showExtended"
@@ -158,7 +158,7 @@ function onBackdropClick(e: MouseEvent) {
           <div class="min-h-0 overflow-hidden">
             <div
               :class="[
-                'mt-3 rounded-xl bg-slate-50 p-4 text-sm leading-8 text-slate-700 transition duration-300 ease-out',
+                'mt-3 rounded-xl bg-slate-50 p-4 text-sm leading-8 text-slate-700 transition duration-300 ease-out dark:bg-white/5 dark:text-slate-300',
                 showExtended ? 'translate-y-0 opacity-100' : '-translate-y-1 opacity-0',
               ]"
             >
@@ -168,13 +168,13 @@ function onBackdropClick(e: MouseEvent) {
         </div>
       </div>
 
-      <section class="mt-6 border-t border-slate-200 pt-6">
-        <h3 class="mb-3 text-base font-bold text-slate-800">مطالعه عمیق</h3>
+      <section class="mt-6 border-t border-slate-200 pt-6 dark:border-white/10">
+        <h3 class="mb-3 text-base font-bold text-slate-800 dark:text-slate-100">مطالعه عمیق</h3>
         <ResourceList :resources="concept.resources" />
       </section>
 
       <section v-if="concept.prerequisites.length" class="mt-6">
-        <h4 class="mb-2 text-sm font-semibold text-slate-700">پیش‌نیازها</h4>
+        <h4 class="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">پیش‌نیازها</h4>
         <div class="flex flex-wrap gap-2">
           <button
             v-for="p in concept.prerequisites"
@@ -189,7 +189,7 @@ function onBackdropClick(e: MouseEvent) {
       </section>
 
       <section v-if="concept.next_steps.length" class="mt-4">
-        <h4 class="mb-2 text-sm font-semibold text-slate-700">گام‌های بعدی</h4>
+        <h4 class="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">گام‌های بعدی</h4>
         <div class="flex flex-wrap gap-2">
           <button
             v-for="n in concept.next_steps"
@@ -206,7 +206,7 @@ function onBackdropClick(e: MouseEvent) {
       <!-- View count: bottom-start corner (right side in RTL), muted so it
            reads as ambient metadata rather than competing with content. -->
       <div
-        class="mt-8 flex items-center justify-start border-t border-slate-100 pt-4 text-xs text-slate-400"
+        class="mt-8 flex items-center justify-start border-t border-slate-100 pt-4 text-xs text-slate-400 dark:border-white/10 dark:text-slate-500"
         :title="`${toPersianDigits(concept.views_count)} بازدید`"
       >
         <span class="inline-flex items-center gap-1.5">

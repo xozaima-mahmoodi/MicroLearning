@@ -43,7 +43,7 @@ function goBack() {
   <button
     type="button"
     :aria-label="label"
-    class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-50 hover:text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400"
+    class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-50 hover:text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:shadow-black/30 dark:hover:border-sky-400/60 dark:hover:bg-sky-400/10 dark:hover:text-sky-300"
     @click="goBack"
   >
     <ArrowRight class="size-4" :stroke-width="2.25" aria-hidden="true" />

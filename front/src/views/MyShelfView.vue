@@ -52,26 +52,26 @@ function formatDate(ts: number): string {
 <template>
   <section>
     <div class="anim-fade-in-up mb-10 text-center md:mb-12 md:text-start">
-      <div class="mb-3 inline-flex items-center justify-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+      <div class="mb-3 inline-flex items-center justify-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
         <Bookmark class="size-3.5" :stroke-width="2.5" :fill="'currentColor'" aria-hidden="true" />
         <span>قفسه‌ی شخصی شما</span>
       </div>
-      <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
+      <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-slate-100 md:text-5xl">
         قفسه من
       </h1>
-      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 md:mx-0 md:text-lg">
+      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-400 md:mx-0 md:text-lg">
         مفاهیمی که ذخیره کرده‌اید تا بعداً بازگردید و عمیق‌تر مطالعه کنید.
       </p>
 
       <div
         v-if="totalCount > 0"
-        class="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-slate-600 md:justify-start"
+        class="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-slate-600 dark:text-slate-400 md:justify-start"
       >
-        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/70 px-3 py-1 font-medium backdrop-blur-sm">
-          <Bookmark class="size-3.5 text-amber-600" :stroke-width="2.5" :fill="'currentColor'" aria-hidden="true" />
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/70 px-3 py-1 font-medium backdrop-blur-sm dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+          <Bookmark class="size-3.5 text-amber-600 dark:text-amber-300" :stroke-width="2.5" :fill="'currentColor'" aria-hidden="true" />
           {{ toPersianDigits(totalCount) }} مفهوم ذخیره‌شده
         </span>
-        <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-medium text-emerald-700">
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-medium text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300">
           <Check class="size-3.5" :stroke-width="3" aria-hidden="true" />
           {{ toPersianDigits(readInShelfCount) }} از {{ toPersianDigits(totalCount) }} خوانده‌ شده
         </span>
@@ -81,19 +81,19 @@ function formatDate(ts: number): string {
     <!-- Empty state -->
     <div
       v-if="totalCount === 0"
-      class="anim-fade-in-up mx-auto max-w-md rounded-2xl border border-dashed border-amber-200 bg-amber-50/60 p-10 text-center backdrop-blur-sm"
+      class="anim-fade-in-up mx-auto max-w-md rounded-2xl border border-dashed border-amber-200 bg-amber-50/60 p-10 text-center backdrop-blur-sm dark:border-amber-400/30 dark:bg-amber-400/5"
     >
-      <div class="mx-auto flex size-14 items-center justify-center rounded-full bg-amber-100">
-        <BookmarkX class="size-7 text-amber-600" :stroke-width="2" aria-hidden="true" />
+      <div class="mx-auto flex size-14 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-400/15">
+        <BookmarkX class="size-7 text-amber-600 dark:text-amber-300" :stroke-width="2" aria-hidden="true" />
       </div>
-      <p class="mt-4 text-base font-semibold text-slate-700">قفسه‌ی شما خالی است</p>
-      <p class="mt-1 text-sm leading-7 text-slate-500">
-        روی آیکون <span class="inline-flex translate-y-0.5 px-0.5"><Bookmark class="size-3.5 text-amber-600" :stroke-width="2.5" /></span>
+      <p class="mt-4 text-base font-semibold text-slate-700 dark:text-slate-200">قفسه‌ی شما خالی است</p>
+      <p class="mt-1 text-sm leading-7 text-slate-500 dark:text-slate-400">
+        روی آیکون <span class="inline-flex translate-y-0.5 px-0.5"><Bookmark class="size-3.5 text-amber-600 dark:text-amber-300" :stroke-width="2.5" /></span>
         کنار هر مفهوم بزنید تا اینجا ذخیره شود.
       </p>
       <RouterLink
         to="/"
-        class="mt-5 inline-flex items-center gap-2 rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-300"
+        class="mt-5 inline-flex items-center gap-2 rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-300 dark:bg-amber-500/90 dark:hover:bg-amber-500"
       >
         کاوش در دسته‌ها
       </RouterLink>
@@ -106,8 +106,10 @@ function formatDate(ts: number): string {
         :key="b.slug"
         :style="{ animationDelay: stagger(i) }"
         :class="[
-          'anim-fade-in-up group relative overflow-hidden rounded-2xl border bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg',
-          library.isRead(b.slug) ? 'border-emerald-200' : 'border-slate-200 hover:border-amber-300',
+          'anim-fade-in-up group relative overflow-hidden rounded-2xl border bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:bg-white/10 dark:shadow-black/30',
+          library.isRead(b.slug)
+            ? 'border-emerald-200 dark:border-emerald-400/30'
+            : 'border-slate-200 hover:border-amber-300 dark:border-white/10 dark:hover:border-amber-400/40',
         ]"
       >
         <button
@@ -120,26 +122,26 @@ function formatDate(ts: number): string {
         >
           <div :class="['h-1.5 w-full', library.isRead(b.slug) ? 'bg-emerald-400' : 'bg-amber-400']" aria-hidden="true" />
           <div class="p-5 pe-14">
-            <div class="text-xs font-medium text-slate-500">
+            <div class="text-xs font-medium text-slate-500 dark:text-slate-400">
               {{ b.domain_name }}
             </div>
             <div class="mt-1 flex flex-wrap items-center gap-2">
-              <h3 :class="['text-lg font-bold transition-colors group-hover:text-sky-700', library.isRead(b.slug) ? 'text-slate-600' : 'text-slate-800']">
+              <h3 :class="['text-lg font-bold transition-colors group-hover:text-sky-700 dark:group-hover:text-sky-300', library.isRead(b.slug) ? 'text-slate-600 dark:text-slate-400' : 'text-slate-800 dark:text-slate-100']">
                 {{ b.title }}
               </h3>
               <DifficultyBadge :level="b.difficulty_level" />
               <span
                 v-if="library.isRead(b.slug)"
-                class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700"
+                class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300"
               >
                 <Check class="size-3" :stroke-width="3" aria-hidden="true" />
                 خوانده‌ شد
               </span>
             </div>
-            <p v-if="b.brief_summary" class="mt-2 text-sm leading-7 text-slate-600">
+            <p v-if="b.brief_summary" class="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-400">
               {{ b.brief_summary }}
             </p>
-            <div class="mt-3 text-xs text-slate-400">
+            <div class="mt-3 text-xs text-slate-400 dark:text-slate-500">
               ذخیره‌شده در {{ formatDate(b.saved_at) }}
             </div>
           </div>
@@ -149,7 +151,7 @@ function formatDate(ts: number): string {
           type="button"
           title="حذف از ذخیره‌شده‌ها"
           aria-label="حذف از ذخیره‌شده‌ها"
-          class="absolute end-3 top-3 inline-flex size-9 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-amber-600 transition duration-200 hover:bg-amber-100 hover:text-amber-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+          class="absolute end-3 top-3 inline-flex size-9 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-amber-600 transition duration-200 hover:bg-amber-100 hover:text-amber-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 dark:border-amber-400/40 dark:bg-amber-400/15 dark:text-amber-300 dark:hover:bg-amber-400/25"
           @click.stop="remove(b.slug)"
         >
           <Bookmark class="size-4" :stroke-width="2" :fill="'currentColor'" aria-hidden="true" />

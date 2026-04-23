@@ -81,22 +81,22 @@ watch(() => props.slug, async () => {
 
 <template>
   <section>
-    <nav class="mb-4 text-sm text-slate-500">
-      <RouterLink to="/" class="hover:text-sky-700">خانه</RouterLink>
+    <nav class="mb-4 text-sm text-slate-500 dark:text-slate-400">
+      <RouterLink to="/" class="hover:text-sky-700 dark:hover:text-sky-300">خانه</RouterLink>
       <span class="mx-2">/</span>
-      <span>{{ domain?.name ?? slug }}</span>
+      <span class="dark:text-slate-300">{{ domain?.name ?? slug }}</span>
     </nav>
 
     <header v-if="domain" class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-800">{{ domain.name }}</h1>
-      <p v-if="domain.description" class="mt-2 text-slate-600">{{ domain.description }}</p>
+      <h1 class="text-3xl font-bold text-slate-800 dark:text-slate-100">{{ domain.name }}</h1>
+      <p v-if="domain.description" class="mt-2 text-slate-600 dark:text-slate-400">{{ domain.description }}</p>
     </header>
 
     <LoadingState v-if="domainLoading && !domain" />
 
     <ol v-else-if="concepts.length" class="relative">
       <div
-        class="absolute top-10 bottom-10 w-0.5 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-200 start-[calc(1.25rem-1px)]"
+        class="absolute top-10 bottom-10 w-0.5 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-200 start-[calc(1.25rem-1px)] dark:from-white/10 dark:via-white/15 dark:to-white/10"
         aria-hidden="true"
       />
       <ConceptListItem
@@ -110,7 +110,7 @@ watch(() => props.slug, async () => {
       />
     </ol>
 
-    <div v-else class="rounded-xl border border-dashed border-slate-300 p-8 text-center text-slate-500">
+    <div v-else class="rounded-xl border border-dashed border-slate-300 p-8 text-center text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-400">
       هنوز مفهومی در این حوزه ثبت نشده است.
     </div>
 

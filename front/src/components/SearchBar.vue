@@ -23,7 +23,7 @@ function clear() {
 <template>
   <div class="relative">
     <div class="pointer-events-none absolute inset-y-0 start-4 flex items-center">
-      <Search class="size-5 text-slate-400" :stroke-width="2" aria-hidden="true" />
+      <Search class="size-5 text-slate-400 dark:text-slate-500" :stroke-width="2" aria-hidden="true" />
     </div>
 
     <input
@@ -32,14 +32,14 @@ function clear() {
       type="search"
       :placeholder="placeholder"
       :aria-label="placeholder"
-      class="w-full rounded-2xl border border-white/60 bg-white/70 py-3.5 ps-12 pe-24 text-base text-slate-700 shadow-md backdrop-blur-md transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky-200/60"
+      class="w-full rounded-2xl border border-white/60 bg-white/70 py-3.5 ps-12 pe-24 text-base text-slate-700 shadow-md backdrop-blur-md transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky-200/60 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:shadow-black/30 dark:placeholder:text-slate-500 dark:focus:border-sky-400/60 dark:focus:bg-white/10 dark:focus:ring-sky-500/20"
     >
 
     <div class="absolute inset-y-0 end-3 flex items-center gap-2">
       <button
         v-if="model"
         type="button"
-        class="rounded-full p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+        class="rounded-full p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200"
         aria-label="پاک‌سازی جستجو"
         @click="clear"
       >
@@ -48,7 +48,7 @@ function clear() {
 
       <kbd
         v-else
-        class="hidden rounded-md border border-slate-200 bg-white/80 px-2 py-0.5 font-mono text-xs font-medium text-slate-500 shadow-sm md:inline"
+        class="hidden rounded-md border border-slate-200 bg-white/80 px-2 py-0.5 font-mono text-xs font-medium text-slate-500 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-slate-400 md:inline"
         aria-hidden="true"
       >/</kbd>
     </div>

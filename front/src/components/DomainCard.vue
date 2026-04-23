@@ -52,7 +52,7 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
     :to="linkTo"
     :style="{ animationDelay }"
     :class="[
-      'anim-fade-in-up group block rounded-2xl border border-white/60 border-t-4 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:bg-white hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-400',
+      'anim-fade-in-up group block rounded-2xl border border-white/60 border-t-4 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:bg-white hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-400 dark:border-white/10 dark:bg-white/10 dark:shadow-black/30 dark:hover:bg-white/15',
       palette.border,
       palette.glow,
     ]"
@@ -72,13 +72,13 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
       <div class="min-w-0 flex-1">
         <h3
           :class="[
-            'text-xl font-bold text-slate-800 transition-colors',
+            'text-xl font-bold text-slate-800 transition-colors dark:text-slate-100',
             palette.groupHoverAccent,
           ]"
         >
           {{ domain.name }}
         </h3>
-        <p v-if="domain.description" class="mt-2 text-sm leading-7 text-slate-500">
+        <p v-if="domain.description" class="mt-2 text-sm leading-7 text-slate-500 dark:text-slate-400">
           {{ domain.description }}
         </p>
       </div>
@@ -86,15 +86,15 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
 
     <div v-if="totalConcepts > 0" class="mt-5">
       <div class="flex items-center justify-between text-xs font-medium">
-        <span :class="isComplete ? 'text-emerald-700' : 'text-slate-500'">
+        <span :class="isComplete ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-500 dark:text-slate-400'">
           <CheckCircle2 v-if="isComplete" class="me-1 inline size-3.5" :stroke-width="2.5" aria-hidden="true" />
           {{ toPersianDigits(readCount) }} از {{ toPersianDigits(totalConcepts) }} مفهوم خوانده شده
         </span>
-        <span :class="['font-semibold tabular-nums', isComplete ? 'text-emerald-700' : palette.accentText]">
+        <span :class="['font-semibold tabular-nums', isComplete ? 'text-emerald-700 dark:text-emerald-300' : palette.accentText]">
           {{ toPersianDigits(progressPercent) }}٪
         </span>
       </div>
-      <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-200/70">
+      <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-200/70 dark:bg-white/10">
         <div
           :class="[
             'h-full rounded-full transition-all duration-500 ease-out',
