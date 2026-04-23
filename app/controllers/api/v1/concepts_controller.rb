@@ -2,9 +2,15 @@ module Api
   module V1
     class ConceptsController < BaseController
       def index
-        domain = Domain.friendly.find(params[:domain_slug])
-        concepts = domain.concepts
-        render json: ConceptSummarySerializer.new(concepts).serializable_hash
+        if params[:domain_slug].present?
+          domain = Domain.friendly.find(params[:domain_slug])
+          render json: ConceptSummarySerializer.new(domain.concepts).serializable_hash
+        else
+          # Flat search index: small enough to ship in one request, lets the
+          # client do real-time substring matching without extra round trips.
+          concepts = Concept.includes(:domain).order(:position, :id)
+          render json: ConceptSearchSerializer.new(concepts).serializable_hash
+        end
       end
 
       def show

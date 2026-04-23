@@ -53,6 +53,14 @@ export const DIFFICULTY_LABELS_FA: Record<DifficultyLevel, string> = {
   expert: "حرفه‌ای",
 };
 
+export interface ConceptSearchHit {
+  id: string;
+  slug: string;
+  title: string;
+  domain_slug: string;
+  domain_name: string;
+}
+
 export const RESOURCE_TYPE_LABELS_FA: Record<ResourceType, string> = {
   book: "کتاب",
   article: "مقاله",
