@@ -8,16 +8,7 @@ const showBack = computed(() => route.name !== 'home')
 </script>
 
 <template>
-  <div class="relative min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50">
-    <!-- Soft decorative blobs add depth without competing with content. -->
-    <div
-      class="pointer-events-none absolute -top-32 -end-32 h-72 w-72 rounded-full bg-sky-200/40 blur-3xl"
-      aria-hidden="true"
-    />
-    <div
-      class="pointer-events-none absolute top-1/3 -start-40 h-80 w-80 rounded-full bg-violet-200/30 blur-3xl"
-      aria-hidden="true"
-    />
+  <div class="bg-canvas relative min-h-screen overflow-x-hidden">
 
     <header class="relative border-b border-white/60 bg-white/70 backdrop-blur">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">

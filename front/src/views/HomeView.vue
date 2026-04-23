@@ -21,10 +21,8 @@ function toggle(slug: string) {
   })
 }
 
-// Stagger-in delay for each category row; reused for domain cards inside a panel.
 const stagger = (i: number) => `${i * 80}ms`
 
-// Expose helpers to the template without needing per-item refs.
 const paletteOf = computed(() => (color: string | null) => paletteFor(color))
 const iconOf = computed(() => (name: string | null) => iconFor(name))
 
@@ -42,7 +40,7 @@ onMounted(async () => {
       <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
         نقشه دانش
       </h1>
-      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-500 md:mx-0 md:text-lg">
+      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 md:mx-0 md:text-lg">
         یک دسته را انتخاب کنید تا حوزه‌های آن آشکار شود و سپس از حوزه دلخواه، نقشه مفاهیم را دنبال کنید.
       </p>
     </div>
@@ -55,43 +53,39 @@ onMounted(async () => {
         :key="cat.id"
         :style="{ animationDelay: stagger(i) }"
         :class="[
-          'anim-fade-in-up overflow-hidden rounded-3xl border border-white/60 bg-white/70 shadow-md backdrop-blur-sm transition-shadow duration-300',
-          expandedSlug === cat.slug ? 'shadow-xl' : '',
+          'anim-fade-in-up overflow-hidden rounded-3xl transition-all duration-300 ease-out',
+          paletteOf(cat.color).gradient,
+          // Glow always uses the category color; intensifies on hover and when expanded.
+          paletteOf(cat.color).gradientGlow,
+          expandedSlug === cat.slug
+            ? 'shadow-2xl'
+            : 'shadow-lg hover:-translate-y-0.5 hover:scale-[1.01] hover:shadow-2xl',
         ]"
       >
         <button
           type="button"
-          class="group flex w-full items-center justify-between gap-5 px-6 py-6 text-start transition hover:bg-white/80 focus:outline-none focus:ring-2 focus:ring-sky-400 md:px-8 md:py-7"
+          class="group flex w-full items-center justify-between gap-5 px-6 py-6 text-start transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 md:px-8 md:py-8"
           :aria-expanded="expandedSlug === cat.slug"
           :aria-controls="`category-panel-${cat.slug}`"
           @click="toggle(cat.slug)"
         >
           <div class="flex items-center gap-5">
             <div
-              :class="[
-                'flex size-16 shrink-0 items-center justify-center rounded-full ring-4 transition-transform duration-300 group-hover:scale-110',
-                paletteOf(cat.color).iconBg,
-                paletteOf(cat.color).ring,
-              ]"
+              class="flex size-16 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/20 shadow-inner backdrop-blur-md transition-transform duration-300 group-hover:scale-110"
               aria-hidden="true"
             >
               <component
                 :is="iconOf(cat.icon)"
-                :class="['size-8', paletteOf(cat.color).iconText]"
+                class="size-8 text-white"
                 :stroke-width="2"
               />
             </div>
 
             <div class="flex flex-col">
-              <h2
-                :class="[
-                  'text-2xl font-extrabold tracking-tight text-slate-900 transition-colors md:text-3xl',
-                  paletteOf(cat.color).groupHoverAccent,
-                ]"
-              >
+              <h2 class="text-2xl font-extrabold tracking-tight text-white drop-shadow-sm md:text-3xl">
                 {{ cat.title }}
               </h2>
-              <span class="mt-1 text-sm text-slate-500">
+              <span class="mt-1 text-sm font-medium text-white/80">
                 {{ cat.domains.length }} حوزه
               </span>
             </div>
@@ -99,9 +93,8 @@ onMounted(async () => {
 
           <ChevronDown
             :class="[
-              'size-7 shrink-0 text-slate-400 transition-transform duration-300 ease-out',
+              'size-7 shrink-0 text-white/90 transition-transform duration-300 ease-out',
               expandedSlug === cat.slug ? 'rotate-180' : '',
-              expandedSlug === cat.slug ? paletteOf(cat.color).iconText : '',
             ]"
             aria-hidden="true"
           />
@@ -117,7 +110,7 @@ onMounted(async () => {
           <div class="min-h-0 overflow-hidden">
             <div
               :class="[
-                'border-t border-white/60 px-6 py-8 transition duration-300 ease-out md:px-8 md:py-10',
+                'bg-white/95 px-6 py-8 backdrop-blur-sm transition duration-300 ease-out md:px-8 md:py-10',
                 expandedSlug === cat.slug ? 'translate-y-0 opacity-100' : '-translate-y-1 opacity-0',
               ]"
             >

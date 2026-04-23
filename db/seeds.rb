@@ -2,8 +2,8 @@
 
 CATEGORIES = [
   { slug: "social-sciences",   title: "علوم اجتماعی",         position: 0, color: "blue-500",   icon: "layers" },
-  { slug: "humanities",        title: "علوم انسانی اصیل",     position: 1, color: "purple-500", icon: "feather" },
-  { slug: "interdisciplinary", title: "مطالعات میان‌رشته‌ای", position: 2, color: "lime-500",   icon: "network" }
+  { slug: "humanities",        title: "علوم انسانی اصیل",     position: 1, color: "emerald-500", icon: "feather" },
+  { slug: "interdisciplinary", title: "مطالعات میان‌رشته‌ای", position: 2, color: "purple-500",  icon: "network" }
 ]
 
 DOMAINS = [
