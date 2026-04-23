@@ -1,18 +1,43 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { Bookmark, Check } from 'lucide-vue-next'
 import type { Concept, ConceptSummary } from '@/types'
+import { useLibraryStore } from '@/stores/library'
 import DifficultyBadge from './DifficultyBadge.vue'
 import ResourceList from './ResourceList.vue'
 
-const props = defineProps<{ concept: Concept }>()
+const props = defineProps<{
+  concept: Concept
+  domainSlug: string
+  domainName: string
+}>()
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'navigate', slug: string): void
 }>()
 
 const showExtended = ref(false)
+const library = useLibraryStore()
 
 watch(() => props.concept.slug, () => { showExtended.value = false })
+
+const isRead = computed(() => library.isRead(props.concept.slug))
+const isBookmarked = computed(() => library.isBookmarked(props.concept.slug))
+
+function toggleRead() {
+  library.toggleRead(props.concept.slug)
+}
+
+function toggleBookmark() {
+  library.toggleBookmark({
+    slug: props.concept.slug,
+    title: props.concept.title,
+    brief_summary: props.concept.brief_summary,
+    difficulty_level: props.concept.difficulty_level,
+    domain_slug: props.domainSlug,
+    domain_name: props.domainName,
+  })
+}
 
 function chipClass(_c: ConceptSummary) {
   return 'inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 transition hover:border-sky-400 hover:text-sky-700'
@@ -38,9 +63,50 @@ function onBackdropClick(e: MouseEvent) {
         ×
       </button>
 
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3 pe-10">
         <h2 class="text-2xl font-bold text-slate-800">{{ concept.title }}</h2>
         <DifficultyBadge :level="concept.difficulty_level" />
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          :title="isRead ? 'علامت‌گذاری به عنوان نخوانده' : 'علامت‌گذاری به عنوان خوانده‌شده'"
+          :aria-label="isRead ? 'علامت‌گذاری به عنوان نخوانده' : 'علامت‌گذاری به عنوان خوانده‌شده'"
+          :aria-pressed="isRead"
+          :class="[
+            'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300',
+            isRead
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+              : 'border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-700',
+          ]"
+          @click="toggleRead"
+        >
+          <Check :class="['size-4 transition', isRead ? 'opacity-100' : 'opacity-60']" :stroke-width="2.5" aria-hidden="true" />
+          <span>{{ isRead ? 'خوانده‌ شد' : 'علامت‌گذاری به عنوان خوانده‌شده' }}</span>
+        </button>
+
+        <button
+          type="button"
+          :title="isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'افزودن به ذخیره‌شده‌ها'"
+          :aria-label="isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'افزودن به ذخیره‌شده‌ها'"
+          :aria-pressed="isBookmarked"
+          :class="[
+            'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300',
+            isBookmarked
+              ? 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
+              : 'border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:text-amber-700',
+          ]"
+          @click="toggleBookmark"
+        >
+          <Bookmark
+            :class="['size-4 transition-transform duration-200', isBookmarked ? 'scale-110' : 'scale-100']"
+            :stroke-width="2"
+            :fill="isBookmarked ? 'currentColor' : 'none'"
+            aria-hidden="true"
+          />
+          <span>{{ isBookmarked ? 'ذخیره شد' : 'ذخیره برای بعد' }}</span>
+        </button>
       </div>
 
       <p v-if="concept.brief_summary" class="mt-4 text-base leading-8 text-slate-700">

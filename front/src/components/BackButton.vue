@@ -28,6 +28,12 @@ function goBack() {
     return
   }
 
+  // My Shelf is a top-level destination — back goes home.
+  if (route.name === 'my-shelf') {
+    router.push({ name: 'home' })
+    return
+  }
+
   // Fallback (should not fire — button is hidden on home).
   router.push({ name: 'home' })
 }

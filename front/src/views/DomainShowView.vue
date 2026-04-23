@@ -104,6 +104,8 @@ watch(() => props.slug, async () => {
         :key="c.id"
         :concept="c"
         :index="i"
+        :domain-slug="domain?.slug ?? slug"
+        :domain-name="domain?.name ?? slug"
         @open="openConcept"
       />
     </ol>
@@ -115,6 +117,8 @@ watch(() => props.slug, async () => {
     <ConceptModal
       v-if="activeConcept && !modalLoading"
       :concept="activeConcept"
+      :domain-slug="domain?.slug ?? slug"
+      :domain-name="domain?.name ?? slug"
       @close="closeConcept"
       @navigate="navigateConcept"
     />

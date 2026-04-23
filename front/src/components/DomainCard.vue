@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { CheckCircle2 } from 'lucide-vue-next'
 import type { Domain } from '@/types'
 import { paletteFor, iconFor } from '@/lib/palette'
+import { useConceptsStore } from '@/stores/concepts'
+import { useLibraryStore } from '@/stores/library'
+import { toPersianDigits } from '@/lib/numerals'
 
 const props = defineProps<{
   domain: Domain
@@ -19,7 +23,27 @@ const linkTo = computed(() => ({
 const palette = computed(() => paletteFor(props.domain.color))
 const iconComponent = computed(() => iconFor(props.domain.icon))
 
-// Stagger each card ~70ms after the previous one so the grid cascades in.
+const conceptsStore = useConceptsStore()
+const library = useLibraryStore()
+
+// Slug list for this domain — derived from the global search index that
+// HomeView fetches once. Empty until the index lands; the progress block
+// hides itself in that case so we don't render misleading "0 از 0".
+const domainConceptSlugs = computed(() => {
+  return conceptsStore.searchIndex
+    .filter((c) => c.domain_slug === props.domain.slug)
+    .map((c) => c.slug)
+})
+
+const totalConcepts = computed(() => domainConceptSlugs.value.length)
+const readCount = computed(() =>
+  domainConceptSlugs.value.reduce((n, s) => n + (library.isRead(s) ? 1 : 0), 0),
+)
+const progressPercent = computed(() =>
+  totalConcepts.value === 0 ? 0 : Math.round((readCount.value / totalConcepts.value) * 100),
+)
+const isComplete = computed(() => totalConcepts.value > 0 && readCount.value === totalConcepts.value)
+
 const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
 </script>
 
@@ -60,9 +84,31 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
       </div>
     </div>
 
+    <div v-if="totalConcepts > 0" class="mt-5">
+      <div class="flex items-center justify-between text-xs font-medium">
+        <span :class="isComplete ? 'text-emerald-700' : 'text-slate-500'">
+          <CheckCircle2 v-if="isComplete" class="me-1 inline size-3.5" :stroke-width="2.5" aria-hidden="true" />
+          {{ toPersianDigits(readCount) }} از {{ toPersianDigits(totalConcepts) }} مفهوم خوانده شده
+        </span>
+        <span :class="['font-semibold tabular-nums', isComplete ? 'text-emerald-700' : palette.accentText]">
+          {{ toPersianDigits(progressPercent) }}٪
+        </span>
+      </div>
+      <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-200/70">
+        <div
+          :class="[
+            'h-full rounded-full transition-all duration-500 ease-out',
+            isComplete ? 'bg-emerald-500' : palette.iconBgSolid,
+          ]"
+          :style="{ width: `${progressPercent}%` }"
+          aria-hidden="true"
+        />
+      </div>
+    </div>
+
     <div
       :class="[
-        'mt-5 text-xs font-semibold opacity-0 transition-opacity duration-200 group-hover:opacity-100',
+        'mt-4 text-xs font-semibold opacity-0 transition-opacity duration-200 group-hover:opacity-100',
         palette.accentText,
       ]"
     >
