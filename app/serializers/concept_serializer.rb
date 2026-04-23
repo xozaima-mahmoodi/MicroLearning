@@ -1,7 +1,7 @@
 class ConceptSerializer
   include JSONAPI::Serializer
 
-  attributes :slug, :title, :brief_summary, :extended_content, :position
+  attributes :slug, :title, :brief_summary, :extended_content, :position, :views_count
   attribute :difficulty_level, &:difficulty_level
 
   attribute :prerequisites do |concept|

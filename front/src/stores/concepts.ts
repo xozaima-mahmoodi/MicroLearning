@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { getList, getOne } from "@/api/client";
+import { getList, getOne, postOne } from "@/api/client";
 import type { Concept, ConceptSearchHit } from "@/types";
 
 export const useConceptsStore = defineStore("concepts", () => {
@@ -26,5 +26,25 @@ export const useConceptsStore = defineStore("concepts", () => {
     return searchIndex.value;
   }
 
-  return { bySlug, searchIndex, loading, fetchBySlug, fetchSearchIndex };
+  async function recordView(slug: string) {
+    // Optimistic bump so the number ticks immediately, then reconcile
+    // with the authoritative count from the server.
+    const cached = bySlug.value[slug];
+    if (cached) {
+      bySlug.value = { ...bySlug.value, [slug]: { ...cached, views_count: cached.views_count + 1 } };
+    }
+    try {
+      const fresh = await postOne<Concept>(`/concepts/${slug}/view`);
+      bySlug.value = { ...bySlug.value, [slug]: fresh };
+      return fresh;
+    } catch {
+      // Roll back the optimistic bump if the request failed.
+      if (cached) {
+        bySlug.value = { ...bySlug.value, [slug]: cached };
+      }
+      return null;
+    }
+  }
+
+  return { bySlug, searchIndex, loading, fetchBySlug, fetchSearchIndex, recordView };
 });

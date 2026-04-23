@@ -17,6 +17,15 @@ module Api
         concept = Concept.friendly.find(params[:slug])
         render json: ConceptSerializer.new(concept).serializable_hash
       end
+
+      def view
+        # increment_counter is a single atomic UPDATE — safe under concurrent
+        # opens and skips validations/callbacks that would slow the hot path.
+        concept = Concept.friendly.find(params[:slug])
+        Concept.increment_counter(:views_count, concept.id)
+        concept.reload
+        render json: ConceptSerializer.new(concept).serializable_hash
+      end
     end
   end
 end

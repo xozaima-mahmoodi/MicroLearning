@@ -7,7 +7,9 @@ Rails.application.routes.draw do
       resources :domains, only: [ :index, :show ], param: :slug do
         resources :concepts, only: [ :index ], param: :slug
       end
-      resources :concepts, only: [ :show, :index ], param: :slug
+      resources :concepts, only: [ :show, :index ], param: :slug do
+        post :view, on: :member
+      end
     end
   end
 end

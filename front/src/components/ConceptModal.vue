@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Bookmark, Check } from 'lucide-vue-next'
+import { Bookmark, Check, Eye } from 'lucide-vue-next'
 import type { Concept, ConceptSummary } from '@/types'
 import { useLibraryStore } from '@/stores/library'
+import { useConceptsStore } from '@/stores/concepts'
+import { toPersianDigits } from '@/lib/numerals'
 import DifficultyBadge from './DifficultyBadge.vue'
 import ResourceList from './ResourceList.vue'
 
@@ -18,8 +20,19 @@ const emit = defineEmits<{
 
 const showExtended = ref(false)
 const library = useLibraryStore()
+const conceptsStore = useConceptsStore()
 
-watch(() => props.concept.slug, () => { showExtended.value = false })
+// Record a view exactly once per slug-open. Re-fires when the user
+// navigates to a different concept via prereq/next-step chips because
+// the parent swaps the prop, but does not double-count re-renders.
+watch(
+  () => props.concept.slug,
+  (slug) => {
+    showExtended.value = false
+    if (slug) conceptsStore.recordView(slug)
+  },
+  { immediate: true },
+)
 
 const isRead = computed(() => library.isRead(props.concept.slug))
 const isBookmarked = computed(() => library.isBookmarked(props.concept.slug))
@@ -189,6 +202,23 @@ function onBackdropClick(e: MouseEvent) {
           </button>
         </div>
       </section>
+
+      <!-- View count: bottom-start corner (right side in RTL), muted so it
+           reads as ambient metadata rather than competing with content. -->
+      <div
+        class="mt-8 flex items-center justify-start border-t border-slate-100 pt-4 text-xs text-slate-400"
+        :title="`${toPersianDigits(concept.views_count)} بازدید`"
+      >
+        <span class="inline-flex items-center gap-1.5">
+          <Eye class="size-3.5" :stroke-width="2" aria-hidden="true" />
+          <span class="font-medium tabular-nums">
+            <span :key="concept.views_count" class="anim-count-pop inline-block">
+              {{ toPersianDigits(concept.views_count) }}
+            </span>
+            <span class="ms-1">بازدید</span>
+          </span>
+        </span>
+      </div>
     </div>
   </div>
 </template>

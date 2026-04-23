@@ -41,6 +41,7 @@ export interface Resource {
 
 export interface Concept extends ConceptSummary {
   extended_content: string | null;
+  views_count: number;
   prerequisites: ConceptSummary[];
   next_steps: ConceptSummary[];
   resources: Resource[];

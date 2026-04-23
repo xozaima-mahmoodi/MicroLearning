@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_22_223522) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_23_191506) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -47,10 +47,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_22_223522) do
     t.integer "position", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "views_count", default: 0, null: false
     t.index ["domain_id", "difficulty_level"], name: "index_concepts_on_domain_id_and_difficulty_level"
     t.index ["domain_id", "position"], name: "index_concepts_on_domain_id_and_position"
     t.index ["domain_id"], name: "index_concepts_on_domain_id"
     t.index ["slug"], name: "index_concepts_on_slug", unique: true
+    t.index ["views_count"], name: "index_concepts_on_views_count"
   end
 
   create_table "domains", force: :cascade do |t|

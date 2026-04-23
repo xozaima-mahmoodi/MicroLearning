@@ -22,3 +22,8 @@ export async function getOne<T extends object>(path: string): Promise<T & { id: 
   const { data } = await http.get<JsonApiSingle<T>>(path);
   return flatten(data.data);
 }
+
+export async function postOne<T extends object>(path: string): Promise<T & { id: string }> {
+  const { data } = await http.post<JsonApiSingle<T>>(path);
+  return flatten(data.data);
+}
