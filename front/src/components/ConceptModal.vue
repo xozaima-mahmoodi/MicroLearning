@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Bookmark, Check, Eye } from 'lucide-vue-next'
+import { Bookmark, Check, Eye, Sparkles } from 'lucide-vue-next'
 import type { Concept, ConceptSummary } from '@/types'
 import { useLibraryStore } from '@/stores/library'
 import { useConceptsStore } from '@/stores/concepts'
+import { useDomainsStore } from '@/stores/domains'
 import { toPersianDigits } from '@/lib/numerals'
 import DifficultyBadge from './DifficultyBadge.vue'
 import ResourceList from './ResourceList.vue'
@@ -21,6 +22,7 @@ const emit = defineEmits<{
 const showExtended = ref(false)
 const library = useLibraryStore()
 const conceptsStore = useConceptsStore()
+const domainsStore = useDomainsStore()
 
 // Record a view exactly once per slug-open. Re-fires when the user
 // navigates to a different concept via prereq/next-step chips because
@@ -33,6 +35,28 @@ watch(
   },
   { immediate: true },
 )
+
+// Same-domain siblings power the "Related Concepts" section. Fetched
+// lazily and cached by the domains store, so revisiting a domain is free.
+watch(
+  () => props.domainSlug,
+  (slug) => {
+    if (slug) domainsStore.fetchConcepts(slug)
+  },
+  { immediate: true },
+)
+
+const relatedConcepts = computed<ConceptSummary[]>(() => {
+  const siblings = domainsStore.conceptsBySlug[props.domainSlug] ?? []
+  // Hide the current concept and any chip already shown above as a prereq
+  // or next step — otherwise the same title would appear twice in the modal.
+  const exclude = new Set<string>([
+    props.concept.slug,
+    ...props.concept.prerequisites.map((p) => p.slug),
+    ...props.concept.next_steps.map((n) => n.slug),
+  ])
+  return siblings.filter((c) => !exclude.has(c.slug)).slice(0, 6)
+})
 
 const isRead = computed(() => library.isRead(props.concept.slug))
 const isBookmarked = computed(() => library.isBookmarked(props.concept.slug))
@@ -199,6 +223,24 @@ function onBackdropClick(e: MouseEvent) {
             @click="emit('navigate', n.slug)"
           >
             {{ n.title }} ←
+          </button>
+        </div>
+      </section>
+
+      <section v-if="relatedConcepts.length" class="mt-4">
+        <h4 class="mb-2 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <Sparkles class="size-3.5 text-fuchsia-500 dark:text-fuchsia-300" :stroke-width="2.5" aria-hidden="true" />
+          مفاهیم مرتبط
+        </h4>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="r in relatedConcepts"
+            :key="r.id"
+            type="button"
+            :class="chipClass(r)"
+            @click="emit('navigate', r.slug)"
+          >
+            {{ r.title }}
           </button>
         </div>
       </section>
