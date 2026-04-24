@@ -15,6 +15,11 @@ import {
   Layers,
   Feather,
   Network,
+  Library,
+  Book,
+  Mic,
+  History,
+  Sparkles,
   type LucideIcon,
 } from "lucide-vue-next";
 
@@ -35,6 +40,11 @@ export const ICON_MAP: Record<string, LucideIcon> = {
   layers: Layers,
   feather: Feather,
   network: Network,
+  library: Library,
+  book: Book,
+  mic: Mic,
+  history: History,
+  sparkles: Sparkles,
 };
 
 // Tailwind class strings must appear literally in source so the JIT
@@ -74,6 +84,7 @@ export const COLOR_MAP: Record<string, Palette> = {
   "blue-500":    { iconText: "text-blue-600 dark:text-blue-300",       iconBg: "bg-blue-50 dark:bg-blue-400/15",       iconBgSolid: "bg-blue-500",    border: "border-t-blue-500",    ring: "ring-blue-100 dark:ring-blue-400/20",       glow: "shadow-blue-200/50 dark:shadow-blue-500/20",       accentText: "text-blue-700 dark:text-blue-300",       groupHoverAccent: "group-hover:text-blue-700 dark:group-hover:text-blue-300",        gradient: "bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700",          gradientGlow: "shadow-blue-500/50 dark:shadow-blue-600/40"      },
   "purple-500":  { iconText: "text-purple-600 dark:text-purple-300",   iconBg: "bg-purple-50 dark:bg-purple-400/15",   iconBgSolid: "bg-purple-500",  border: "border-t-purple-500",  ring: "ring-purple-100 dark:ring-purple-400/20",   glow: "shadow-purple-200/50 dark:shadow-purple-500/20",   accentText: "text-purple-700 dark:text-purple-300",   groupHoverAccent: "group-hover:text-purple-700 dark:group-hover:text-purple-300",    gradient: "bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700",          gradientGlow: "shadow-purple-500/50 dark:shadow-purple-600/40"  },
   "lime-500":    { iconText: "text-lime-600 dark:text-lime-300",       iconBg: "bg-lime-50 dark:bg-lime-400/15",       iconBgSolid: "bg-lime-500",    border: "border-t-lime-500",    ring: "ring-lime-100 dark:ring-lime-400/20",       glow: "shadow-lime-200/50 dark:shadow-lime-500/20",       accentText: "text-lime-700 dark:text-lime-300",       groupHoverAccent: "group-hover:text-lime-700 dark:group-hover:text-lime-300",        gradient: "bg-gradient-to-br from-lime-500 to-emerald-600 dark:from-lime-600 dark:to-emerald-700",        gradientGlow: "shadow-lime-500/50 dark:shadow-lime-600/40"      },
+  "emerald-gold":{ iconText: "text-emerald-700 dark:text-amber-300",   iconBg: "bg-emerald-50 dark:bg-emerald-400/15", iconBgSolid: "bg-emerald-600", border: "border-t-emerald-600", ring: "ring-emerald-100 dark:ring-amber-400/20",   glow: "shadow-amber-200/50 dark:shadow-amber-500/20",     accentText: "text-emerald-700 dark:text-amber-300",   groupHoverAccent: "group-hover:text-emerald-700 dark:group-hover:text-amber-300",    gradient: "bg-gradient-to-br from-emerald-600 via-emerald-500 to-amber-600 dark:from-emerald-700 dark:via-emerald-600 dark:to-amber-700", gradientGlow: "shadow-amber-500/50 dark:shadow-amber-600/40"   },
 };
 
 export const FALLBACK_PALETTE: Palette = {
