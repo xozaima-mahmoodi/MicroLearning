@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       resources :concepts, only: [ :show, :index ], param: :slug do
         post :view, on: :member
       end
+      resources :activities, only: [ :index, :create ]
     end
   end
 end

@@ -6,6 +6,7 @@ import { storeToRefs } from 'pinia'
 import { useLibraryStore } from '@/stores/library'
 import { toPersianDigits } from '@/lib/numerals'
 import DifficultyBadge from '@/components/DifficultyBadge.vue'
+import ActivityCalendar from '@/components/ActivityCalendar.vue'
 
 const router = useRouter()
 const library = useLibraryStore()
@@ -76,6 +77,12 @@ function formatDate(ts: number): string {
           {{ toPersianDigits(readInShelfCount) }} از {{ toPersianDigits(totalCount) }} خوانده‌ شده
         </span>
       </div>
+    </div>
+
+    <!-- Activity heat map — shown whether or not bookmarks exist, since
+         a user can mark concepts read without bookmarking. -->
+    <div class="mb-8 md:mb-10">
+      <ActivityCalendar />
     </div>
 
     <!-- Empty state -->

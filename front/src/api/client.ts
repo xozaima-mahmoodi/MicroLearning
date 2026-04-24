@@ -1,8 +1,17 @@
 import axios from "axios";
+import { getDeviceId } from "@/lib/device";
 
 export const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1",
   headers: { Accept: "application/vnd.api+json, application/json" },
+});
+
+// Attach the device id on every request so per-user endpoints (activities,
+// future progress) can scope data without an auth layer.
+http.interceptors.request.use((config) => {
+  config.headers = config.headers ?? {};
+  config.headers["X-Device-Id"] = getDeviceId();
+  return config;
 });
 
 type JsonApiResource<T> = { id: string; type: string; attributes: T };

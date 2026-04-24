@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 import type { Concept } from "@/types";
+import { useActivityStore } from "@/stores/activity";
 
 export interface BookmarkEntry {
   slug: string;
@@ -82,9 +83,16 @@ export const useLibraryStore = defineStore("library", () => {
     // Replace the Set so Vue picks up the change — mutating in place
     // doesn't trigger the ref's reactivity.
     const next = new Set(readSet.value);
-    if (next.has(slug)) next.delete(slug);
+    const wasRead = next.has(slug);
+    if (wasRead) next.delete(slug);
     else next.add(slug);
     readSet.value = next;
+
+    // Only the unread → read transition counts as a study event. Un-marking
+    // shouldn't retroactively erase activity history.
+    if (!wasRead) {
+      useActivityStore().recordRead(slug);
+    }
   }
 
   function isBookmarked(slug: string): boolean {

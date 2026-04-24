@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_23_191506) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_24_074738) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -95,9 +95,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_23_191506) do
     t.index ["concept_id"], name: "index_resources_on_concept_id"
   end
 
+  create_table "user_activities", force: :cascade do |t|
+    t.string "user_id", null: false
+    t.bigint "concept_id", null: false
+    t.date "activity_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["concept_id"], name: "index_user_activities_on_concept_id"
+    t.index ["user_id", "activity_date"], name: "index_user_activities_on_user_id_and_activity_date"
+    t.index ["user_id", "concept_id", "activity_date"], name: "idx_user_activities_uniq", unique: true
+  end
+
   add_foreign_key "concept_relations", "concepts", column: "source_concept_id"
   add_foreign_key "concept_relations", "concepts", column: "target_concept_id"
   add_foreign_key "concepts", "domains"
   add_foreign_key "domains", "categories"
   add_foreign_key "resources", "concepts"
+  add_foreign_key "user_activities", "concepts"
 end
