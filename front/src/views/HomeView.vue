@@ -7,9 +7,10 @@ import { useConceptsStore } from '@/stores/concepts'
 import DomainCard from '@/components/DomainCard.vue'
 import LoadingState from '@/components/LoadingState.vue'
 import SearchBar from '@/components/SearchBar.vue'
-import { ChevronDown, SearchX } from 'lucide-vue-next'
+import { ChevronDown, Layers, SearchX } from 'lucide-vue-next'
 import { paletteFor, iconFor } from '@/lib/palette'
 import { normalize } from '@/lib/search'
+import { toPersianDigits } from '@/lib/numerals'
 import type { Category, ConceptSearchHit, Domain } from '@/types'
 
 const route = useRoute()
@@ -191,9 +192,20 @@ onBeforeUnmount(() => {
               <h2 class="text-2xl font-extrabold tracking-tight text-white drop-shadow-sm md:text-3xl">
                 {{ cat.title }}
               </h2>
-              <span class="mt-1 text-sm font-medium text-white/80">
-                {{ cat.domains.length }} حوزه
-              </span>
+              <div class="mt-1 flex flex-wrap items-center gap-2 text-sm font-medium text-white/85">
+                <span>{{ toPersianDigits(cat.domains.length) }} حوزه</span>
+                <!-- Concept-count badge: glassmorphism pill matching the
+                     category icon ring; reads as ambient metadata, not a CTA. -->
+                <span
+                  v-if="cat.concepts_count > 0"
+                  class="inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/15 px-2.5 py-0.5 text-xs font-semibold text-white shadow-inner backdrop-blur-md"
+                  :title="`${toPersianDigits(cat.concepts_count)} مفهوم`"
+                >
+                  <Layers class="size-3" :stroke-width="2.5" aria-hidden="true" />
+                  <span class="tabular-nums">{{ toPersianDigits(cat.concepts_count) }}</span>
+                  <span>مفهوم</span>
+                </span>
+              </div>
             </div>
           </div>
 

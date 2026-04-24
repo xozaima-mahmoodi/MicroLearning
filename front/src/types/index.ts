@@ -9,6 +9,7 @@ export interface Domain {
   position: number;
   color: string | null;
   icon: string | null;
+  concepts_count: number;
 }
 
 export interface Category {
@@ -18,6 +19,7 @@ export interface Category {
   position: number;
   color: string | null;
   icon: string | null;
+  concepts_count: number;
   domains: Domain[];
 }
 

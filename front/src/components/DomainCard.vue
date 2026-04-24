@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
-import { CheckCircle2 } from 'lucide-vue-next'
+import { CheckCircle2, Layers } from 'lucide-vue-next'
 import type { Domain } from '@/types'
 import { paletteFor, iconFor } from '@/lib/palette'
 import { useConceptsStore } from '@/stores/concepts'
@@ -55,8 +55,22 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
       'anim-fade-in-up group block rounded-2xl border border-white/60 border-t-4 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:bg-white hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-400 dark:border-white/10 dark:bg-white/10 dark:shadow-black/30 dark:hover:bg-white/15',
       palette.border,
       palette.glow,
+      'relative',
     ]"
   >
+    <!-- Concept-count badge: glassmorphism pill in the top-end corner.
+         Persian digits + "مفهوم". Hidden if seeds report zero. -->
+    <span
+      v-if="domain.concepts_count > 0"
+      class="absolute end-3 top-3 inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:text-slate-200"
+      :title="`${toPersianDigits(domain.concepts_count)} مفهوم`"
+      :aria-label="`${toPersianDigits(domain.concepts_count)} مفهوم`"
+    >
+      <Layers class="size-3" :stroke-width="2.5" aria-hidden="true" />
+      <span class="tabular-nums">{{ toPersianDigits(domain.concepts_count) }}</span>
+      <span>مفهوم</span>
+    </span>
+
     <div class="flex items-start gap-4">
       <div
         :class="[
@@ -72,7 +86,7 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
       <div class="min-w-0 flex-1">
         <h3
           :class="[
-            'text-xl font-bold text-slate-800 transition-colors dark:text-slate-100',
+            'pe-24 text-xl font-bold text-slate-800 transition-colors dark:text-slate-100',
             palette.groupHoverAccent,
           ]"
         >

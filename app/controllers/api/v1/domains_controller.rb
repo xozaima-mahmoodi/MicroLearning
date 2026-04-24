@@ -2,12 +2,13 @@ module Api
   module V1
     class DomainsController < BaseController
       def index
-        domains = Domain.ordered
+        # Preload concepts so the serializer's `concepts_count` doesn't N+1.
+        domains = Domain.ordered.includes(:concepts)
         render json: DomainSerializer.new(domains).serializable_hash
       end
 
       def show
-        domain = Domain.friendly.find(params[:slug])
+        domain = Domain.includes(:concepts).friendly.find(params[:slug])
         render json: DomainSerializer.new(domain).serializable_hash
       end
     end
