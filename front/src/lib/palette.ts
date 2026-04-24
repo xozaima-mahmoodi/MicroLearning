@@ -20,6 +20,7 @@ import {
   Mic,
   History,
   Sparkles,
+  Quote,
   type LucideIcon,
 } from "lucide-vue-next";
 
@@ -45,6 +46,7 @@ export const ICON_MAP: Record<string, LucideIcon> = {
   mic: Mic,
   history: History,
   sparkles: Sparkles,
+  quote: Quote,
 };
 
 // Tailwind class strings must appear literally in source so the JIT
