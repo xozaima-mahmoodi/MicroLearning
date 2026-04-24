@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { Flame, BookOpenCheck, CalendarRange } from "lucide-vue-next";
+import jmoment from "jalali-moment";
 import { useActivityStore } from "@/stores/activity";
 import { toPersianDigits } from "@/lib/numerals";
 
@@ -19,12 +20,10 @@ const WEEKS = 26;
 // Persian short weekday labels (Saturday → Friday). Persian week starts
 // on Saturday but JS Date.getDay() uses Sunday=0; we map below.
 const WEEKDAY_LABELS = ["ش", "ی", "د", "س", "چ", "پ", "ج"];
-// Persian month names; index 0..11 maps to Gregorian months. Even though
-// the calendar is Gregorian under the hood, the labels are Persianized
-// (not Jalali names) since we group cells by Gregorian month boundaries.
-const MONTH_LABELS = [
-  "ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن",
-  "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر",
+// Jalali (Persian) month names, indexed 0..11 (فروردین..اسفند).
+const JALALI_MONTHS = [
+  "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+  "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند",
 ];
 
 function startOfWeekSat(d: Date): Date {
@@ -85,16 +84,17 @@ const grid = computed<Cell[][]>(() => {
   return cols;
 });
 
-// Compute month labels: place a label above each column where the month
-// changes from the prior column. Index keyed by column position.
+// Place a Jalali month label above each column where the Jalali month
+// changes from the prior column. Saturday-anchored Gregorian columns
+// align identically with Jalali weeks, since Saturday is شنبه either way.
 const monthLabelByCol = computed<Record<number, string>>(() => {
   const out: Record<number, string> = {};
   let prevMonth = -1;
   grid.value.forEach((col, i) => {
-    const m = col[0].date.getMonth();
-    if (m !== prevMonth) {
-      out[i] = MONTH_LABELS[m];
-      prevMonth = m;
+    const jMonth = jmoment(col[0].date).jMonth(); // 0..11
+    if (jMonth !== prevMonth) {
+      out[i] = JALALI_MONTHS[jMonth];
+      prevMonth = jMonth;
     }
   });
   return out;
@@ -115,15 +115,15 @@ const tooltip = ref<{ x: number; y: number; text: string } | null>(null);
 const wrapperRef = ref<HTMLDivElement | null>(null);
 
 function tooltipText(cell: Cell): string {
-  const dateStr = cell.date.toLocaleDateString("fa-IR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  // Jalali date in the form '۱۵ اردیبهشت ۱۴۰۵'. Built from parts rather
+  // than format strings so the month name is guaranteed to come from our
+  // canonical JALALI_MONTHS list.
+  const m = jmoment(cell.date);
+  const dateStr = `${toPersianDigits(m.jDate())} ${JALALI_MONTHS[m.jMonth()]} ${toPersianDigits(m.jYear())}`;
   const body = cell.count > 0
     ? `${toPersianDigits(cell.count)} مفهوم مطالعه‌شده`
     : "بدون فعالیت";
-  return `${toPersianDigits(dateStr)} — ${body}`;
+  return `${dateStr} — ${body}`;
 }
 
 function showTip(cell: Cell, e: MouseEvent) {
