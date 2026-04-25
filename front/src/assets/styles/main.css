@@ -5,6 +5,10 @@
 @layer base {
   html {
     background-color: #f8fafc;
+    /* Stop iOS Safari from inflating text on landscape rotation; we
+       already set explicit responsive sizes everywhere. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   html.dark {
     background-color: #020617; /* slate-950 */
@@ -12,6 +16,9 @@
 
   body {
     @apply font-vazir text-slate-900 antialiased;
+    /* Suppresses the gray tap flash on touch devices — the app uses
+       its own focus/active styles, the default highlight just adds noise. */
+    -webkit-tap-highlight-color: transparent;
   }
   html.dark body {
     @apply text-slate-200;
@@ -19,6 +26,15 @@
 
   h1, h2, h3, h4 {
     @apply font-bold;
+    /* Persian compound words can overrun narrow phone widths; allow the
+       browser to break long words at character boundaries as a fallback. */
+    overflow-wrap: anywhere;
+  }
+
+  /* Prevent any overscroll bounce from showing the page behind a fixed
+     bottom-nav on iOS while keeping wheel/pointer scrolling natural. */
+  body {
+    overscroll-behavior-y: contain;
   }
 
   /* Soft global theme transition — only targets colors/borders/shadows
@@ -65,6 +81,20 @@
 }
 
 @layer utilities {
+  /* Fluid type scale via clamp(). Use these on long Persian headings/body
+     copy where the discrete `sm:`/`md:` jumps look choppy. The min keeps
+     mobile readable; the max prevents unbounded growth on ultra-wide. */
+  .text-fluid-h1 { font-size: clamp(1.75rem, 1.2rem + 2.6vw, 3.75rem); line-height: 1.1; }
+  .text-fluid-h2 { font-size: clamp(1.25rem, 1rem + 1.4vw, 2rem);   line-height: 1.2; }
+  .text-fluid-body { font-size: clamp(0.875rem, 0.8rem + 0.4vw, 1.125rem); line-height: 1.75; }
+
+  /* Soft fade hint for horizontally scrollable content (e.g. activity
+     calendar on phones). Apply to a wrapper around the scroll element. */
+  .scroll-fade-x {
+    -webkit-mask-image: linear-gradient(to left, black calc(100% - 24px), transparent 100%);
+            mask-image: linear-gradient(to left, black calc(100% - 24px), transparent 100%);
+  }
+
   @keyframes fade-in-up {
     from {
       opacity: 0;

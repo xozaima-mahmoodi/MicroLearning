@@ -146,16 +146,16 @@ const hasAnyActivity = computed(() => (summary.value?.days ?? []).length > 0);
 
 <template>
   <section
-    class="anim-fade-in-up rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-white/5 dark:shadow-black/30 md:p-6"
+    class="anim-fade-in-up rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-white/5 dark:shadow-black/30 sm:p-5 md:p-6"
   >
-    <header class="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <header class="mb-4 flex flex-wrap items-start justify-between gap-2 sm:mb-5 sm:items-center sm:gap-3">
       <div class="flex items-center gap-2">
         <CalendarRange class="size-5 text-emerald-600 dark:text-emerald-300" :stroke-width="2" aria-hidden="true" />
         <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 md:text-lg">
           تقویم فعالیت
         </h2>
       </div>
-      <div class="flex flex-wrap items-center gap-2 text-xs">
+      <div class="flex w-full flex-wrap items-center gap-1.5 text-[11px] sm:w-auto sm:gap-2 sm:text-xs">
         <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-medium text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300">
           <BookOpenCheck class="size-3.5" :stroke-width="2.5" aria-hidden="true" />
           {{ toPersianDigits(totalConcepts) }} مفهوم مطالعه‌شده
@@ -185,7 +185,10 @@ const hasAnyActivity = computed(() => (summary.value?.days ?? []).length > 0);
     </div>
 
     <div v-else ref="wrapperRef" class="relative" dir="rtl">
-      <div class="overflow-x-auto pb-1">
+      <!-- Mobile: horizontal scroll is the primary interaction, with a soft
+           fade hint on the leading edge (start) so users see there's more.
+           overscroll-x-contain stops the parent from accidentally scrolling. -->
+      <div class="ml-activity-scroll overflow-x-auto overscroll-x-contain pb-2" style="-webkit-overflow-scrolling: touch">
         <div class="inline-flex flex-col gap-2">
           <!-- Month label row -->
           <div class="flex gap-[3px] ps-7">

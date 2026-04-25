@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import { Bookmark, Moon, Sun } from 'lucide-vue-next'
+import { Bookmark, Home, Moon, Sun } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
 import { useLibraryStore } from '@/stores/library'
 import { useThemeStore } from '@/stores/theme'
@@ -23,19 +23,22 @@ const { isDark } = storeToRefs(themeStore)
   <div class="bg-canvas relative min-h-screen overflow-x-hidden">
 
     <header class="relative border-b border-white/60 bg-white/70 backdrop-blur dark:border-white/10 dark:bg-slate-900/70">
-      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 sm:gap-4">
         <RouterLink
           to="/"
-          class="text-sm font-semibold leading-snug text-slate-800 transition-colors hover:text-sky-700 dark:text-slate-100 dark:hover:text-sky-300 md:text-base"
+          class="min-w-0 truncate text-[13px] font-semibold leading-snug text-slate-800 transition-colors hover:text-sky-700 dark:text-slate-100 dark:hover:text-sky-300 sm:text-sm md:text-base"
         >
-          یادگیری خرد؛ برای ذهنی که می‌خواهد کلان ببیند
+          <!-- Short label on phones, full motto on tablet+ to keep the header
+               from wrapping or pushing the action buttons off-screen. -->
+          <span class="sm:hidden">یادگیری خرد</span>
+          <span class="hidden sm:inline">یادگیری خرد؛ برای ذهنی که می‌خواهد کلان ببیند</span>
         </RouterLink>
 
-        <nav class="flex items-center gap-2 md:gap-3">
+        <nav class="flex shrink-0 items-center gap-2 md:gap-3">
           <RouterLink
             to="/my-shelf"
             active-class="!border-amber-200 !bg-amber-50 !text-amber-700 dark:!border-amber-400/40 dark:!bg-amber-400/10 dark:!text-amber-300"
-            class="group relative inline-flex items-center gap-1.5 rounded-full border border-white/60 bg-white/70 px-3 py-1.5 text-xs font-medium text-slate-700 backdrop-blur-sm transition duration-200 hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-amber-400/30 dark:hover:bg-amber-400/10 dark:hover:text-amber-300 md:text-sm"
+            class="group relative hidden items-center gap-1.5 rounded-full border border-white/60 bg-white/70 px-3 py-1.5 text-xs font-medium text-slate-700 backdrop-blur-sm transition duration-200 hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-amber-400/30 dark:hover:bg-amber-400/10 dark:hover:text-amber-300 md:inline-flex md:text-sm"
             :title="'قفسه‌ی شخصی شما'"
           >
             <Bookmark
@@ -57,7 +60,7 @@ const { isDark } = storeToRefs(themeStore)
             :title="isDark ? 'تغییر به حالت روشن' : 'تغییر به حالت شب'"
             :aria-label="isDark ? 'تغییر به حالت روشن' : 'تغییر به حالت شب'"
             :aria-pressed="isDark"
-            class="group relative inline-flex size-9 items-center justify-center overflow-hidden rounded-full border border-white/60 bg-white/70 text-slate-600 backdrop-blur-sm transition duration-300 hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-indigo-400/30 dark:hover:bg-indigo-400/10 dark:hover:text-indigo-200"
+            class="group relative inline-flex size-10 items-center justify-center overflow-hidden rounded-full border border-white/60 bg-white/70 text-slate-600 backdrop-blur-sm transition duration-300 hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-indigo-400/30 dark:hover:bg-indigo-400/10 dark:hover:text-indigo-200 sm:size-9"
             @click="themeStore.toggle"
           >
             <Sun
@@ -81,15 +84,57 @@ const { isDark } = storeToRefs(themeStore)
       </div>
     </header>
 
-    <main class="mx-auto max-w-6xl px-6 py-10">
-      <div v-if="showBack" class="mb-6 flex justify-start">
+    <main class="mx-auto max-w-6xl px-4 pt-6 pb-28 sm:px-6 sm:pt-8 sm:pb-12 md:py-10">
+      <div v-if="showBack" class="mb-5 flex justify-start sm:mb-6">
         <BackButton />
       </div>
       <RouterView />
     </main>
 
-    <footer class="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-400 dark:border-white/10 dark:bg-slate-900/50 dark:text-slate-500">
+    <footer class="hidden border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-400 dark:border-white/10 dark:bg-slate-900/50 dark:text-slate-500 md:block">
       هوشمندانه‌تر بیاموز
     </footer>
+
+    <!-- Mobile bottom navigation: fixed at the viewport bottom on phones,
+         hidden on md+ where the header nav handles the same routes.
+         pb-[env(safe-area-inset-bottom)] keeps it clear of iOS home bar. -->
+    <nav
+      class="fixed inset-x-0 bottom-0 z-40 border-t border-white/60 bg-white/90 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/90 md:hidden"
+      style="padding-bottom: env(safe-area-inset-bottom)"
+      aria-label="ناوبری اصلی"
+    >
+      <ul class="mx-auto flex max-w-md items-stretch justify-around">
+        <li class="flex-1">
+          <RouterLink
+            to="/"
+            active-class="!text-sky-700 dark:!text-sky-300"
+            :aria-label="'خانه'"
+            class="flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium text-slate-500 transition-colors hover:text-sky-700 dark:text-slate-400 dark:hover:text-sky-300"
+          >
+            <Home class="size-5" :stroke-width="2.25" aria-hidden="true" />
+            <span>خانه</span>
+          </RouterLink>
+        </li>
+        <li class="flex-1">
+          <RouterLink
+            to="/my-shelf"
+            active-class="!text-amber-700 dark:!text-amber-300"
+            :aria-label="'قفسه من'"
+            class="relative flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium text-slate-500 transition-colors hover:text-amber-700 dark:text-slate-400 dark:hover:text-amber-300"
+          >
+            <span class="relative">
+              <Bookmark class="size-5" :stroke-width="2.25" aria-hidden="true" />
+              <span
+                v-if="bookmarkCount > 0"
+                class="absolute -end-2 -top-1.5 inline-flex min-w-[1rem] items-center justify-center rounded-full bg-amber-500 px-1 text-[9px] font-bold leading-none text-white tabular-nums shadow-sm dark:bg-amber-400 dark:text-amber-950"
+              >
+                {{ toPersianDigits(bookmarkCount) }}
+              </span>
+            </span>
+            <span>قفسه من</span>
+          </RouterLink>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>

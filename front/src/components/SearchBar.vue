@@ -5,6 +5,8 @@ import { Search, X } from 'lucide-vue-next'
 const model = defineModel<string>({ default: '' })
 
 withDefaults(defineProps<{ placeholder?: string }>(), {
+  // Tailwind doesn't drive the placeholder string itself, but the input is
+  // narrow on phones; the prompt is short enough to read without truncation.
   placeholder: 'جستجو در دسته‌ها، حوزه‌ها و مفاهیم…',
 })
 
@@ -32,7 +34,7 @@ function clear() {
       type="search"
       :placeholder="placeholder"
       :aria-label="placeholder"
-      class="w-full rounded-2xl border border-white/60 bg-white/70 py-3.5 ps-12 pe-24 text-base text-slate-700 shadow-md backdrop-blur-md transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky-200/60 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:shadow-black/30 dark:placeholder:text-slate-500 dark:focus:border-sky-400/60 dark:focus:bg-white/10 dark:focus:ring-sky-500/20"
+      class="w-full rounded-2xl border border-white/60 bg-white/70 py-3 ps-11 pe-12 text-sm text-slate-700 shadow-md backdrop-blur-md transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky-200/60 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:shadow-black/30 dark:placeholder:text-slate-500 dark:focus:border-sky-400/60 dark:focus:bg-white/10 dark:focus:ring-sky-500/20 sm:py-3.5 sm:ps-12 sm:pe-24 sm:text-base"
     >
 
     <div class="absolute inset-y-0 end-3 flex items-center gap-2">

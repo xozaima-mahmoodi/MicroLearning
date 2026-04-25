@@ -129,16 +129,16 @@ onBeforeUnmount(() => {
 
 <template>
   <section>
-    <div class="mb-10 text-center md:mb-12 md:text-start">
-      <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-slate-100 md:text-6xl">
+    <div class="mb-8 text-center md:mb-12 md:text-start">
+      <h1 class="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl md:text-6xl">
         میکرولرنینگ
       </h1>
-      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-400 md:mx-0 md:text-lg">
+      <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-400 sm:text-base sm:leading-8 md:mx-0 md:text-lg">
         نقشه‌ی راه تو در دنیای دانش
       </p>
     </div>
 
-    <div class="mx-auto mb-10 max-w-2xl md:mb-12">
+    <div class="mx-auto mb-8 max-w-2xl md:mb-12">
       <SearchBar ref="searchBarRef" v-model="query" />
     </div>
 
@@ -155,13 +155,13 @@ onBeforeUnmount(() => {
       <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">عبارت دیگری امتحان کنید یا املای کلمه را بررسی کنید.</p>
     </div>
 
-    <ul v-else class="space-y-6">
+    <ul v-else class="space-y-5 sm:space-y-6">
       <li
         v-for="(cat, i) in filteredCategories"
         :key="cat.id"
         :style="{ animationDelay: stagger(i) }"
         :class="[
-          'anim-fade-in-up overflow-hidden rounded-3xl transition-all duration-300 ease-out dark:saturate-[1.1]',
+          'anim-fade-in-up overflow-hidden rounded-2xl transition-all duration-300 ease-out dark:saturate-[1.1] sm:rounded-3xl',
           paletteOf(cat.color).gradient,
           paletteOf(cat.color).gradientGlow,
           isExpanded(cat.slug)
@@ -171,34 +171,34 @@ onBeforeUnmount(() => {
       >
         <button
           type="button"
-          class="group flex w-full items-center justify-between gap-5 px-6 py-6 text-start transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 md:px-8 md:py-8"
+          class="group flex w-full items-center justify-between gap-3 px-4 py-5 text-start transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:gap-5 sm:px-6 sm:py-6 md:px-8 md:py-8"
           :aria-expanded="isExpanded(cat.slug)"
           :aria-controls="`category-panel-${cat.slug}`"
           @click="toggle(cat.slug)"
         >
-          <div class="flex items-center gap-5">
+          <div class="flex min-w-0 items-center gap-3 sm:gap-5">
             <div
-              class="flex size-16 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/20 shadow-inner backdrop-blur-md transition-transform duration-300 group-hover:scale-110"
+              class="flex size-12 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/20 shadow-inner backdrop-blur-md transition-transform duration-300 group-hover:scale-110 sm:size-14 md:size-16"
               aria-hidden="true"
             >
               <component
                 :is="iconOf(cat.icon)"
-                class="size-8 text-white"
+                class="size-6 text-white sm:size-7 md:size-8"
                 :stroke-width="2"
               />
             </div>
 
-            <div class="flex flex-col">
-              <h2 class="text-2xl font-extrabold tracking-tight text-white drop-shadow-sm md:text-3xl">
+            <div class="flex min-w-0 flex-col">
+              <h2 class="truncate text-lg font-extrabold tracking-tight text-white drop-shadow-sm sm:text-2xl md:text-3xl">
                 {{ cat.title }}
               </h2>
-              <div class="mt-1 flex flex-wrap items-center gap-2 text-sm font-medium text-white/85">
+              <div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-white/85 sm:gap-2 sm:text-sm">
                 <span>{{ toPersianDigits(cat.domains.length) }} حوزه</span>
                 <!-- Concept-count badge: glassmorphism pill matching the
                      category icon ring; reads as ambient metadata, not a CTA. -->
                 <span
                   v-if="cat.concepts_count > 0"
-                  class="inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/15 px-2.5 py-0.5 text-xs font-semibold text-white shadow-inner backdrop-blur-md"
+                  class="inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/15 px-2 py-0.5 text-[11px] font-semibold text-white shadow-inner backdrop-blur-md sm:px-2.5 sm:text-xs"
                   :title="`${toPersianDigits(cat.concepts_count)} مفهوم`"
                 >
                   <Layers class="size-3" :stroke-width="2.5" aria-hidden="true" />
@@ -211,7 +211,7 @@ onBeforeUnmount(() => {
 
           <ChevronDown
             :class="[
-              'size-7 shrink-0 text-white/90 transition-transform duration-300 ease-out',
+              'size-6 shrink-0 text-white/90 transition-transform duration-300 ease-out sm:size-7',
               isExpanded(cat.slug) ? 'rotate-180' : '',
             ]"
             aria-hidden="true"
@@ -228,17 +228,17 @@ onBeforeUnmount(() => {
           <div class="min-h-0 overflow-hidden">
             <div
               :class="[
-                'bg-white/95 px-6 py-8 backdrop-blur-sm transition duration-300 ease-out dark:bg-slate-900/85 md:px-8 md:py-10',
+                'bg-white/95 px-4 py-6 backdrop-blur-sm transition duration-300 ease-out dark:bg-slate-900/85 sm:px-6 sm:py-8 md:px-8 md:py-10',
                 isExpanded(cat.slug) ? 'translate-y-0 opacity-100' : '-translate-y-1 opacity-0',
               ]"
             >
               <div
                 v-if="cat.domains.length === 0"
-                class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-8 text-center text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-400"
+                class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-6 text-center text-sm text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-400 sm:p-8 sm:text-base"
               >
                 هنوز حوزه‌ای در این دسته ثبت نشده است.
               </div>
-              <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div v-else class="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                 <div
                   v-for="(d, di) in cat.domains"
                   :key="d.id"

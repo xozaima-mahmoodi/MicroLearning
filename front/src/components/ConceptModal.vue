@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Bookmark, Check, Eye, Sparkles } from 'lucide-vue-next'
+import { Bookmark, Check, Eye, Sparkles, X } from 'lucide-vue-next'
 import type { Concept, ConceptSummary } from '@/types'
 import { useLibraryStore } from '@/stores/library'
 import { useConceptsStore } from '@/stores/concepts'
@@ -86,22 +86,29 @@ function onBackdropClick(e: MouseEvent) {
 </script>
 
 <template>
+  <!-- Mobile: full-viewport sheet so users get every pixel for content; the
+       backdrop and rounded card return at sm and up. -->
   <div
-    class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm dark:bg-black/70 md:p-10"
+    class="fixed inset-0 z-50 flex items-stretch justify-center overflow-y-auto bg-slate-900/50 backdrop-blur-sm dark:bg-black/70 sm:items-start sm:p-4 md:p-10"
     @click="onBackdropClick"
   >
-    <div class="relative w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl dark:border dark:border-white/10 dark:bg-slate-900 dark:shadow-black/40 md:p-8">
-      <button
-        type="button"
-        class="absolute end-4 top-4 inline-flex size-8 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-100"
-        aria-label="بستن"
-        @click="emit('close')"
-      >
-        ×
-      </button>
+    <div class="relative flex min-h-full w-full max-w-3xl flex-col bg-white shadow-xl dark:bg-slate-900 dark:shadow-black/40 sm:min-h-0 sm:rounded-2xl sm:dark:border sm:dark:border-white/10">
+      <!-- Sticky close bar on mobile so the X is always reachable while
+           scrolling long concepts; collapses to a corner button on sm+. -->
+      <div class="sticky top-0 z-10 flex items-center justify-end border-b border-slate-100 bg-white/95 px-4 py-2 backdrop-blur dark:border-white/10 dark:bg-slate-900/95 sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+        <button
+          type="button"
+          class="inline-flex size-10 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-slate-50 sm:absolute sm:end-4 sm:top-4 sm:size-9"
+          aria-label="بستن"
+          @click="emit('close')"
+        >
+          <X class="size-5" :stroke-width="2.25" aria-hidden="true" />
+        </button>
+      </div>
 
-      <div class="flex flex-wrap items-center gap-3 pe-10">
-        <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ concept.title }}</h2>
+      <div class="px-5 pb-8 pt-3 sm:p-6 md:p-8 sm:pt-6">
+      <div class="flex flex-wrap items-center gap-2 pe-0 sm:gap-3 sm:pe-10">
+        <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 sm:text-2xl md:text-3xl">{{ concept.title }}</h2>
         <DifficultyBadge :level="concept.difficulty_level" />
       </div>
 
@@ -146,7 +153,7 @@ function onBackdropClick(e: MouseEvent) {
         </button>
       </div>
 
-      <p v-if="concept.brief_summary" class="mt-4 text-base leading-8 text-slate-700 dark:text-slate-300">
+      <p v-if="concept.brief_summary" class="mt-4 text-sm leading-7 text-slate-700 dark:text-slate-300 sm:text-base sm:leading-8">
         {{ concept.brief_summary }}
       </p>
 
@@ -260,6 +267,7 @@ function onBackdropClick(e: MouseEvent) {
             <span class="ms-1">بازدید</span>
           </span>
         </span>
+      </div>
       </div>
     </div>
   </div>

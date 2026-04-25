@@ -52,15 +52,15 @@ function formatDate(ts: number): string {
 
 <template>
   <section>
-    <div class="anim-fade-in-up mb-10 text-center md:mb-12 md:text-start">
+    <div class="anim-fade-in-up mb-8 text-center md:mb-12 md:text-start">
       <div class="mb-3 inline-flex items-center justify-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
         <Bookmark class="size-3.5" :stroke-width="2.5" :fill="'currentColor'" aria-hidden="true" />
         <span>قفسه‌ی شخصی شما</span>
       </div>
-      <h1 class="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-slate-100 md:text-5xl">
+      <h1 class="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl md:text-5xl">
         قفسه من
       </h1>
-      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-400 md:mx-0 md:text-lg">
+      <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-400 sm:text-base sm:leading-8 md:mx-0 md:text-lg">
         مفاهیمی که ذخیره کرده‌اید تا بعداً بازگردید و عمیق‌تر مطالعه کنید.
       </p>
 
@@ -107,7 +107,7 @@ function formatDate(ts: number): string {
     </div>
 
     <!-- Bookmarked list -->
-    <ul v-else class="grid gap-4 md:grid-cols-2">
+    <ul v-else class="grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
       <li
         v-for="(b, i) in bookmarksSorted"
         :key="b.slug"
@@ -128,27 +128,27 @@ function formatDate(ts: number): string {
           @click="open(b.slug, b.domain_slug)"
         >
           <div :class="['h-1.5 w-full', library.isRead(b.slug) ? 'bg-emerald-400' : 'bg-amber-400']" aria-hidden="true" />
-          <div class="p-5 pe-14">
+          <div class="p-4 pe-14 sm:p-5">
             <div class="text-xs font-medium text-slate-500 dark:text-slate-400">
               {{ b.domain_name }}
             </div>
             <div class="mt-1 flex flex-wrap items-center gap-2">
-              <h3 :class="['text-lg font-bold transition-colors group-hover:text-sky-700 dark:group-hover:text-sky-300', library.isRead(b.slug) ? 'text-slate-600 dark:text-slate-400' : 'text-slate-800 dark:text-slate-100']">
+              <h3 :class="['text-base font-bold transition-colors group-hover:text-sky-700 dark:group-hover:text-sky-300 sm:text-lg', library.isRead(b.slug) ? 'text-slate-600 dark:text-slate-400' : 'text-slate-800 dark:text-slate-100']">
                 {{ b.title }}
               </h3>
               <DifficultyBadge :level="b.difficulty_level" />
               <span
                 v-if="library.isRead(b.slug)"
-                class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300"
+                class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 sm:text-xs"
               >
                 <Check class="size-3" :stroke-width="3" aria-hidden="true" />
                 خوانده‌ شد
               </span>
             </div>
-            <p v-if="b.brief_summary" class="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-400">
+            <p v-if="b.brief_summary" class="mt-2 text-xs leading-6 text-slate-600 dark:text-slate-400 sm:text-sm sm:leading-7">
               {{ b.brief_summary }}
             </p>
-            <div class="mt-3 text-xs text-slate-400 dark:text-slate-500">
+            <div class="mt-2 text-[11px] text-slate-400 dark:text-slate-500 sm:mt-3 sm:text-xs">
               ذخیره‌شده در {{ formatDate(b.saved_at) }}
             </div>
           </div>
@@ -158,7 +158,7 @@ function formatDate(ts: number): string {
           type="button"
           title="حذف از ذخیره‌شده‌ها"
           aria-label="حذف از ذخیره‌شده‌ها"
-          class="absolute end-3 top-3 inline-flex size-9 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-amber-600 transition duration-200 hover:bg-amber-100 hover:text-amber-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 dark:border-amber-400/40 dark:bg-amber-400/15 dark:text-amber-300 dark:hover:bg-amber-400/25"
+          class="absolute end-2 top-2 inline-flex size-10 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-amber-600 transition duration-200 hover:bg-amber-100 hover:text-amber-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 dark:border-amber-400/40 dark:bg-amber-400/15 dark:text-amber-300 dark:hover:bg-amber-400/25 sm:end-3 sm:top-3 sm:size-9"
           @click.stop="remove(b.slug)"
         >
           <Bookmark class="size-4" :stroke-width="2" :fill="'currentColor'" aria-hidden="true" />

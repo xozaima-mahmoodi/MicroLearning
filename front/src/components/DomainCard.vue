@@ -52,47 +52,48 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
     :to="linkTo"
     :style="{ animationDelay }"
     :class="[
-      'anim-fade-in-up group block rounded-2xl border border-white/60 border-t-4 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:bg-white hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-400 dark:border-white/10 dark:bg-white/10 dark:shadow-black/30 dark:hover:bg-white/15',
+      'anim-fade-in-up group block rounded-2xl border border-white/60 border-t-4 bg-white/70 p-4 shadow-md backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:bg-white hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-400 dark:border-white/10 dark:bg-white/10 dark:shadow-black/30 dark:hover:bg-white/15 sm:p-5 md:p-6',
       palette.border,
       palette.glow,
       'relative',
     ]"
   >
     <!-- Concept-count badge: glassmorphism pill in the top-end corner.
-         Persian digits + "مفهوم". Hidden if seeds report zero. -->
+         Persian digits + "مفهوم". Hidden if seeds report zero.
+         On phones we drop the "مفهوم" suffix to keep the badge compact. -->
     <span
       v-if="domain.concepts_count > 0"
-      class="absolute end-3 top-3 inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:text-slate-200"
+      class="absolute end-2.5 top-2.5 inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/70 px-2 py-0.5 text-[10px] font-semibold text-slate-700 shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:text-slate-200 sm:end-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[11px]"
       :title="`${toPersianDigits(domain.concepts_count)} مفهوم`"
       :aria-label="`${toPersianDigits(domain.concepts_count)} مفهوم`"
     >
       <Layers class="size-3" :stroke-width="2.5" aria-hidden="true" />
       <span class="tabular-nums">{{ toPersianDigits(domain.concepts_count) }}</span>
-      <span>مفهوم</span>
+      <span class="hidden sm:inline">مفهوم</span>
     </span>
 
-    <div class="flex items-start gap-4">
+    <div class="flex items-start gap-3 sm:gap-4">
       <div
         :class="[
-          'flex size-14 shrink-0 items-center justify-center rounded-full ring-4 transition-transform duration-300 group-hover:scale-110',
+          'flex size-12 shrink-0 items-center justify-center rounded-full ring-4 transition-transform duration-300 group-hover:scale-110 sm:size-14',
           palette.iconBg,
           palette.ring,
         ]"
         aria-hidden="true"
       >
-        <component :is="iconComponent" :class="['size-7', palette.iconText]" :stroke-width="2" />
+        <component :is="iconComponent" :class="['size-6 sm:size-7', palette.iconText]" :stroke-width="2" />
       </div>
 
       <div class="min-w-0 flex-1">
         <h3
           :class="[
-            'pe-24 text-xl font-bold text-slate-800 transition-colors dark:text-slate-100',
+            'pe-12 text-base font-bold text-slate-800 transition-colors dark:text-slate-100 sm:pe-20 sm:text-lg md:text-xl md:pe-24',
             palette.groupHoverAccent,
           ]"
         >
           {{ domain.name }}
         </h3>
-        <p v-if="domain.description" class="mt-2 text-sm leading-7 text-slate-500 dark:text-slate-400">
+        <p v-if="domain.description" class="mt-1.5 text-xs leading-6 text-slate-500 dark:text-slate-400 sm:mt-2 sm:text-sm sm:leading-7">
           {{ domain.description }}
         </p>
       </div>
