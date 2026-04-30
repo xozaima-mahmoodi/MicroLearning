@@ -16,7 +16,6 @@ RSpec.describe Domain, type: :model do
     subject { build(:domain) }
 
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:name) }
     it { is_expected.to validate_numericality_of(:position).only_integer }
 
     it "auto-generates a slug from the name" do

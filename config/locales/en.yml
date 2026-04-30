@@ -29,3 +29,7 @@
 
 en:
   hello: "Hello world"
+  api:
+    errors:
+      missing_device: "Missing X-Device-Id header"
+      not_found: "Not Found"

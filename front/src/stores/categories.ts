@@ -18,5 +18,10 @@ export const useCategoriesStore = defineStore("categories", () => {
     }
   }
 
-  return { list, loading, fetchAll };
+  function reset() {
+    list.value = [];
+    loading.value = false;
+  }
+
+  return { list, loading, fetchAll, reset };
 });

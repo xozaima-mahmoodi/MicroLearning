@@ -24,6 +24,13 @@
     @apply text-slate-200;
   }
 
+  /* English mode: swap to Inter (clean Latin sans). The lang attribute is
+     set by the inline bootstrap in index.html and kept in sync by the
+     locale store, so this rule applies on the very first paint. */
+  html[lang="en"] body {
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
   h1, h2, h3, h4 {
     @apply font-bold;
     /* Persian compound words can overrun narrow phone widths; allow the

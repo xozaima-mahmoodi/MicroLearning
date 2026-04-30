@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { Resource, ResourceType } from '@/types'
-import { RESOURCE_TYPE_LABELS_FA } from '@/types'
 
 const props = defineProps<{ resources: Resource[] }>()
+const { t } = useI18n()
 
 const grouped = computed(() => {
   const map: Partial<Record<ResourceType, Resource[]>> = {}
@@ -24,13 +25,13 @@ const TYPE_ICON: Record<ResourceType, string> = {
 
 <template>
   <div v-if="resources.length === 0" class="text-sm text-slate-500 dark:text-slate-400">
-    هنوز منبعی ثبت نشده است.
+    {{ t('resource.empty') }}
   </div>
   <div v-else class="space-y-4">
     <section v-for="(items, type) in grouped" :key="type">
       <h5 class="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
         <span class="me-2">{{ TYPE_ICON[type as ResourceType] }}</span>
-        {{ RESOURCE_TYPE_LABELS_FA[type as ResourceType] }}
+        {{ t(`resource.type.${type as ResourceType}`) }}
       </h5>
       <ul class="space-y-2">
         <li
