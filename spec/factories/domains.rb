@@ -1,8 +1,10 @@
 FactoryBot.define do
   factory :domain do
-    name { "MyString" }
-    slug { "MyString" }
-    description { "MyText" }
-    position { 1 }
+    sequence(:name) { |n| "Domain #{n}" }
+    description { "A test domain" }
+    sequence(:position) { |n| n }
+    color { "#00ff00" }
+    icon  { "icon-domain" }
+    association :category
   end
 end

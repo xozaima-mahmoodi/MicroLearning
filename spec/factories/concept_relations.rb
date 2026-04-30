@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :concept_relation do
-    source_concept { nil }
-    target_concept { nil }
+    association :source_concept, factory: :concept
+    association :target_concept, factory: :concept
   end
 end

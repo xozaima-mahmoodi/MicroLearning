@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :resource do
-    concept { nil }
-    title { "MyString" }
-    author { "MyString" }
-    link { "MyString" }
-    resource_type { 1 }
-    position { 1 }
+    association :concept
+    sequence(:title) { |n| "Resource #{n}" }
+    author        { "Test Author" }
+    sequence(:link) { |n| "https://example.com/resource-#{n}" }
+    resource_type { :book }
+    sequence(:position) { |n| n }
   end
 end
