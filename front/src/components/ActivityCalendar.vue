@@ -2,12 +2,16 @@
 import { computed, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { Flame, BookOpenCheck, CalendarRange } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
 import jmoment from "jalali-moment";
 import { useActivityStore } from "@/stores/activity";
+import { useLocaleStore } from "@/stores/locale";
 import { toPersianDigits } from "@/lib/numerals";
 
+const { t } = useI18n();
 const activity = useActivityStore();
 const { summary, loading } = storeToRefs(activity);
+const { current: localeRef, isRtl } = storeToRefs(useLocaleStore());
 
 onMounted(() => {
   if (!summary.value) activity.fetchSummary();
@@ -17,21 +21,40 @@ onMounted(() => {
 // to fit a sidebar without horizontal scrolling on mid-size screens.
 const WEEKS = 26;
 
-// Persian short weekday labels (Saturday → Friday). Persian week starts
-// on Saturday but JS Date.getDay() uses Sunday=0; we map below.
-const WEEKDAY_LABELS = ["ش", "ی", "د", "س", "چ", "پ", "ج"];
-// Jalali (Persian) month names, indexed 0..11 (فروردین..اسفند).
+// Week-start anchor flips with the locale: Persian week starts Saturday,
+// English week (GitHub-style) starts Sunday. Keeping the anchor locale-aware
+// means month-label boundaries don't drift in either direction.
+const weekStartDow = computed(() => (localeRef.value === "fa" ? 6 : 0)); // 0=Sun .. 6=Sat
+
+const WEEKDAY_LABELS_FA = ["ش", "ی", "د", "س", "چ", "پ", "ج"]; // Sat..Fri
+const WEEKDAY_LABELS_EN = ["S", "M", "T", "W", "T", "F", "S"]; // Sun..Sat
+
+const weekdayLabels = computed(() =>
+  localeRef.value === "fa" ? WEEKDAY_LABELS_FA : WEEKDAY_LABELS_EN,
+);
+
+// Persian: show Mon/Wed/Fri (indexes 1/3/5 in Sat-start array).
+// English: show Mon/Wed/Fri (indexes 1/3/5 in Sun-start array).
+// Same predicate works because each labels array still alternates daily.
+function showWeekdayLabel(idx: number): boolean {
+  return idx % 2 === 1;
+}
+
 const JALALI_MONTHS = [
   "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
   "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند",
 ];
+const GREGORIAN_MONTHS_EN = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
 
-function startOfWeekSat(d: Date): Date {
-  // Anchor each cell column to a Saturday (Persian week start).
+function startOfWeek(d: Date): Date {
+  // Anchor each cell column to the locale's week-start.
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
-  const dayFromSat = (x.getDay() + 1) % 7; // Sat=0, Sun=1, ..., Fri=6
-  x.setDate(x.getDate() - dayFromSat);
+  const offset = (x.getDay() - weekStartDow.value + 7) % 7;
+  x.setDate(x.getDate() - offset);
   return x;
 }
 
@@ -59,7 +82,7 @@ interface Cell {
 const grid = computed<Cell[][]>(() => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const lastColStart = startOfWeekSat(today); // Saturday of current week
+  const lastColStart = startOfWeek(today);
   const firstColStart = new Date(lastColStart);
   firstColStart.setDate(firstColStart.getDate() - (WEEKS - 1) * 7);
 
@@ -84,17 +107,23 @@ const grid = computed<Cell[][]>(() => {
   return cols;
 });
 
-// Place a Jalali month label above each column where the Jalali month
-// changes from the prior column. Saturday-anchored Gregorian columns
-// align identically with Jalali weeks, since Saturday is شنبه either way.
+// Place a month label above each column where the month changes from
+// the prior column. In FA we use Jalali months; in EN we use Gregorian.
 const monthLabelByCol = computed<Record<number, string>>(() => {
   const out: Record<number, string> = {};
-  let prevMonth = -1;
+  let prev = -1;
   grid.value.forEach((col, i) => {
-    const jMonth = jmoment(col[0].date).jMonth(); // 0..11
-    if (jMonth !== prevMonth) {
-      out[i] = JALALI_MONTHS[jMonth];
-      prevMonth = jMonth;
+    const headDate = col[0].date;
+    const monthIdx =
+      localeRef.value === "fa"
+        ? jmoment(headDate).jMonth()
+        : headDate.getMonth();
+    if (monthIdx !== prev) {
+      out[i] =
+        localeRef.value === "fa"
+          ? JALALI_MONTHS[monthIdx]
+          : GREGORIAN_MONTHS_EN[monthIdx];
+      prev = monthIdx;
     }
   });
   return out;
@@ -115,14 +144,19 @@ const tooltip = ref<{ x: number; y: number; text: string } | null>(null);
 const wrapperRef = ref<HTMLDivElement | null>(null);
 
 function tooltipText(cell: Cell): string {
-  // Jalali date in the form '۱۵ اردیبهشت ۱۴۰۵'. Built from parts rather
-  // than format strings so the month name is guaranteed to come from our
-  // canonical JALALI_MONTHS list.
-  const m = jmoment(cell.date);
-  const dateStr = `${toPersianDigits(m.jDate())} ${JALALI_MONTHS[m.jMonth()]} ${toPersianDigits(m.jYear())}`;
-  const body = cell.count > 0
-    ? `${toPersianDigits(cell.count)} مفهوم مطالعه‌شده`
-    : "بدون فعالیت";
+  let dateStr: string;
+  if (localeRef.value === "fa") {
+    const m = jmoment(cell.date);
+    dateStr = `${toPersianDigits(m.jDate())} ${JALALI_MONTHS[m.jMonth()]} ${toPersianDigits(m.jYear())}`;
+  } else {
+    // Gregorian long form: "15 May 2026". toPersianDigits is a no-op in EN.
+    dateStr = `${cell.date.getDate()} ${GREGORIAN_MONTHS_EN[cell.date.getMonth()]} ${cell.date.getFullYear()}`;
+  }
+  const body =
+    cell.count > 0
+      ? t("activity.concepts_on_day", { count: toPersianDigits(cell.count) })
+      : t("activity.no_activity");
+  // Use an em-dash on both sides; reads fine LTR or RTL.
   return `${dateStr} — ${body}`;
 }
 
@@ -136,7 +170,9 @@ function showTip(cell: Cell, e: MouseEvent) {
     text: tooltipText(cell),
   };
 }
-function hideTip() { tooltip.value = null; }
+function hideTip() {
+  tooltip.value = null;
+}
 
 const totalConcepts = computed(() => summary.value?.total_concepts ?? 0);
 const longestStreak = computed(() => summary.value?.longest_streak ?? 0);
@@ -152,39 +188,42 @@ const hasAnyActivity = computed(() => (summary.value?.days ?? []).length > 0);
       <div class="flex items-center gap-2">
         <CalendarRange class="size-5 text-emerald-600 dark:text-emerald-300" :stroke-width="2" aria-hidden="true" />
         <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 md:text-lg">
-          تقویم فعالیت
+          {{ t('activity.title') }}
         </h2>
       </div>
       <div class="flex w-full flex-wrap items-center gap-1.5 text-[11px] sm:w-auto sm:gap-2 sm:text-xs">
         <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-medium text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300">
           <BookOpenCheck class="size-3.5" :stroke-width="2.5" aria-hidden="true" />
-          {{ toPersianDigits(totalConcepts) }} مفهوم مطالعه‌شده
+          {{ t('activity.concepts_studied', { count: toPersianDigits(totalConcepts) }) }}
         </span>
         <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 font-medium text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
           <Flame class="size-3.5" :stroke-width="2.5" aria-hidden="true" />
-          طولانی‌ترین زنجیره: {{ toPersianDigits(longestStreak) }} روز
+          {{ t('activity.longest_streak', { days: toPersianDigits(longestStreak) }) }}
         </span>
         <span
           v-if="currentStreak > 0"
           class="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 font-medium text-orange-700 dark:border-orange-400/40 dark:bg-orange-400/10 dark:text-orange-300"
         >
-          زنجیره فعلی: {{ toPersianDigits(currentStreak) }} روز
+          {{ t('activity.current_streak', { days: toPersianDigits(currentStreak) }) }}
         </span>
       </div>
     </header>
 
     <div v-if="loading && !summary" class="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
-      در حال بارگذاری…
+      {{ t('activity.loading') }}
     </div>
 
     <div
       v-else-if="!hasAnyActivity"
       class="rounded-xl border border-dashed border-slate-300 bg-slate-50/60 px-4 py-6 text-center text-sm text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-400"
     >
-      هنوز فعالیتی ثبت نشده است. مفهومی را به‌عنوان «خوانده‌شد» علامت بزنید تا اینجا نمایان شود.
+      {{ t('activity.empty') }}
     </div>
 
-    <div v-else ref="wrapperRef" class="relative" dir="rtl">
+    <!-- Calendar shell. dir is set explicitly per-locale so the columns
+         always read in chronological order (oldest start → newest end)
+         in the user's reading direction, regardless of the page dir. -->
+    <div v-else ref="wrapperRef" class="relative" :dir="isRtl ? 'rtl' : 'ltr'">
       <!-- Mobile: horizontal scroll is the primary interaction, with a soft
            fade hint on the leading edge (start) so users see there's more.
            overscroll-x-contain stops the parent from accidentally scrolling. -->
@@ -207,12 +246,11 @@ const hasAnyActivity = computed(() => (summary.value?.days ?? []).length > 0);
           <div class="flex gap-[3px]">
             <div class="flex flex-col gap-[3px] pe-1">
               <div
-                v-for="(label, di) in WEEKDAY_LABELS"
+                v-for="(label, di) in weekdayLabels"
                 :key="`wd-${di}`"
                 class="flex h-[12px] w-5 items-center justify-end text-[10px] leading-3 text-slate-400 dark:text-slate-500"
               >
-                <!-- Show only Sun/Tue/Thu to keep the column tidy -->
-                <span v-if="di % 2 === 1">{{ label }}</span>
+                <span v-if="showWeekdayLabel(di)">{{ label }}</span>
               </div>
             </div>
 
@@ -240,13 +278,13 @@ const hasAnyActivity = computed(() => (summary.value?.days ?? []).length > 0);
 
           <!-- Legend -->
           <div class="mt-1 flex items-center justify-end gap-2 text-[10px] text-slate-500 dark:text-slate-400">
-            <span>کمتر</span>
+            <span>{{ t('activity.less') }}</span>
             <span class="size-3 rounded-[3px] bg-slate-200/70 dark:bg-white/5" />
             <span class="size-3 rounded-[3px] bg-emerald-200 dark:bg-emerald-500/30" />
             <span class="size-3 rounded-[3px] bg-emerald-400 dark:bg-emerald-500/55" />
             <span class="size-3 rounded-[3px] bg-emerald-500 dark:bg-emerald-400/75" />
             <span class="size-3 rounded-[3px] bg-emerald-600 dark:bg-emerald-300" />
-            <span>بیشتر</span>
+            <span>{{ t('activity.more') }}</span>
           </div>
         </div>
       </div>

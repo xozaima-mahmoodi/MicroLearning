@@ -35,5 +35,12 @@ export const useDomainsStore = defineStore("domains", () => {
     return cs;
   }
 
-  return { list, bySlug, conceptsBySlug, loading, fetchAll, fetchBySlug, fetchConcepts };
+  function reset() {
+    list.value = [];
+    bySlug.value = {};
+    conceptsBySlug.value = {};
+    loading.value = false;
+  }
+
+  return { list, bySlug, conceptsBySlug, loading, fetchAll, fetchBySlug, fetchConcepts, reset };
 });

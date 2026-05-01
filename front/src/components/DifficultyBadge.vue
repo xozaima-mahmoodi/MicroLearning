@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { DifficultyLevel } from '@/types'
-import { DIFFICULTY_LABELS_FA } from '@/types'
 
 const props = defineProps<{ level: DifficultyLevel }>()
+const { t } = useI18n()
 
 const classes = computed(() => {
   const base = 'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium'
@@ -18,5 +19,5 @@ const classes = computed(() => {
 </script>
 
 <template>
-  <span :class="classes">{{ DIFFICULTY_LABELS_FA[level] }}</span>
+  <span :class="classes">{{ t(`difficulty.${level}`) }}</span>
 </template>

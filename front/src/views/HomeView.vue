@@ -2,8 +2,10 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useCategoriesStore } from '@/stores/categories'
 import { useConceptsStore } from '@/stores/concepts'
+import { useLocaleStore } from '@/stores/locale'
 import DomainCard from '@/components/DomainCard.vue'
 import LoadingState from '@/components/LoadingState.vue'
 import SearchBar from '@/components/SearchBar.vue'
@@ -13,10 +15,12 @@ import { normalize } from '@/lib/search'
 import { toPersianDigits } from '@/lib/numerals'
 import type { Category, ConceptSearchHit, Domain } from '@/types'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const categoriesStore = useCategoriesStore()
 const conceptsStore = useConceptsStore()
+const { current: localeRef } = storeToRefs(useLocaleStore())
 const { list, loading } = storeToRefs(categoriesStore)
 
 const expandedSlug = ref<string | null>(null)
@@ -109,6 +113,9 @@ function onKeydown(e: KeyboardEvent) {
   searchBarRef.value?.focus()
 }
 
+// FA uses the Persian-style listing comma; EN uses the Western comma.
+const titleSeparator = computed(() => (localeRef.value === 'fa' ? '، ' : ', '))
+
 onMounted(async () => {
   await categoriesStore.fetchAll()
   // Fire-and-forget — search becomes deep as soon as it lands; until then
@@ -131,10 +138,10 @@ onBeforeUnmount(() => {
   <section>
     <div class="mb-8 text-center md:mb-12 md:text-start">
       <h1 class="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl md:text-6xl">
-        میکرولرنینگ
+        {{ t('home.title') }}
       </h1>
       <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-400 sm:text-base sm:leading-8 md:mx-0 md:text-lg">
-        نقشه‌ی راه تو در دنیای دانش
+        {{ t('home.subtitle') }}
       </p>
     </div>
 
@@ -151,8 +158,8 @@ onBeforeUnmount(() => {
       <div class="mx-auto flex size-14 items-center justify-center rounded-full bg-slate-100 dark:bg-white/10">
         <SearchX class="size-7 text-slate-400 dark:text-slate-400" :stroke-width="2" aria-hidden="true" />
       </div>
-      <p class="mt-4 text-base font-semibold text-slate-700 dark:text-slate-200">مفهومی با این عنوان پیدا نشد</p>
-      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">عبارت دیگری امتحان کنید یا املای کلمه را بررسی کنید.</p>
+      <p class="mt-4 text-base font-semibold text-slate-700 dark:text-slate-200">{{ t('home.no_results_title') }}</p>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ t('home.no_results_hint') }}</p>
     </div>
 
     <ul v-else class="space-y-5 sm:space-y-6">
@@ -193,17 +200,17 @@ onBeforeUnmount(() => {
                 {{ cat.title }}
               </h2>
               <div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs font-medium text-white/85 sm:gap-2 sm:text-sm">
-                <span>{{ toPersianDigits(cat.domains.length) }} حوزه</span>
+                <span>{{ t('home.domains_count', { count: toPersianDigits(cat.domains.length) }) }}</span>
                 <!-- Concept-count badge: glassmorphism pill matching the
                      category icon ring; reads as ambient metadata, not a CTA. -->
                 <span
                   v-if="cat.concepts_count > 0"
                   class="inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/15 px-2 py-0.5 text-[11px] font-semibold text-white shadow-inner backdrop-blur-md sm:px-2.5 sm:text-xs"
-                  :title="`${toPersianDigits(cat.concepts_count)} مفهوم`"
+                  :title="`${toPersianDigits(cat.concepts_count)} ${t('home.concepts_count_suffix')}`"
                 >
                   <Layers class="size-3" :stroke-width="2.5" aria-hidden="true" />
                   <span class="tabular-nums">{{ toPersianDigits(cat.concepts_count) }}</span>
-                  <span>مفهوم</span>
+                  <span>{{ t('home.concepts_count_suffix') }}</span>
                 </span>
               </div>
             </div>
@@ -236,7 +243,7 @@ onBeforeUnmount(() => {
                 v-if="cat.domains.length === 0"
                 class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-6 text-center text-sm text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-400 sm:p-8 sm:text-base"
               >
-                هنوز حوزه‌ای در این دسته ثبت نشده است.
+                {{ t('home.empty_domains') }}
               </div>
               <div v-else class="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                 <div
@@ -253,9 +260,9 @@ onBeforeUnmount(() => {
                     v-if="cat.matchedConcepts[d.slug]?.length"
                     class="px-1 text-xs leading-6 text-slate-500 dark:text-slate-400"
                   >
-                    <span class="font-semibold text-slate-600 dark:text-slate-300">یافته‌ها در مفاهیم: </span>
+                    <span class="font-semibold text-slate-600 dark:text-slate-300">{{ t('home.matched_in_concepts') }}</span>
                     <span>
-                      {{ cat.matchedConcepts[d.slug].map((c) => c.title).join('، ') }}
+                      {{ cat.matchedConcepts[d.slug].map((c) => c.title).join(titleSeparator) }}
                     </span>
                   </p>
                 </div>
@@ -270,7 +277,7 @@ onBeforeUnmount(() => {
       v-if="!loading && !isSearching && list.length === 0"
       class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-8 text-center text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-400"
     >
-      هنوز دسته‌ای ثبت نشده است.
+      {{ t('home.empty_categories') }}
     </div>
   </section>
 </template>

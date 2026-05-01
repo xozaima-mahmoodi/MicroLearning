@@ -46,5 +46,11 @@ export const useConceptsStore = defineStore("concepts", () => {
     }
   }
 
-  return { bySlug, searchIndex, loading, fetchBySlug, fetchSearchIndex, recordView };
+  function reset() {
+    bySlug.value = {};
+    searchIndex.value = [];
+    loading.value = false;
+  }
+
+  return { bySlug, searchIndex, loading, fetchBySlug, fetchSearchIndex, recordView, reset };
 });

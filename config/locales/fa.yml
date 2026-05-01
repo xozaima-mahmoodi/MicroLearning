@@ -1,0 +1,6 @@
+fa:
+  hello: "سلام دنیا"
+  api:
+    errors:
+      missing_device: "هدر X-Device-Id الزامی است."
+      not_found: "پیدا نشد"

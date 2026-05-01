@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { Bookmark, Check, Eye, Sparkles, X } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia'
 import type { Concept, ConceptSummary } from '@/types'
 import { useLibraryStore } from '@/stores/library'
 import { useConceptsStore } from '@/stores/concepts'
 import { useDomainsStore } from '@/stores/domains'
+import { useLocaleStore } from '@/stores/locale'
 import { toPersianDigits } from '@/lib/numerals'
 import DifficultyBadge from './DifficultyBadge.vue'
 import ResourceList from './ResourceList.vue'
@@ -19,14 +22,17 @@ const emit = defineEmits<{
   (e: 'navigate', slug: string): void
 }>()
 
+const { t } = useI18n()
+const { isRtl } = storeToRefs(useLocaleStore())
+// Logical-direction arrow for the next-step chips. RTL flow reads
+// right-to-left, so the leftward arrow is the "forward" indicator.
+const forwardArrow = computed(() => (isRtl.value ? '←' : '→'))
+
 const showExtended = ref(false)
 const library = useLibraryStore()
 const conceptsStore = useConceptsStore()
 const domainsStore = useDomainsStore()
 
-// Record a view exactly once per slug-open. Re-fires when the user
-// navigates to a different concept via prereq/next-step chips because
-// the parent swaps the prop, but does not double-count re-renders.
 watch(
   () => props.concept.slug,
   (slug) => {
@@ -36,8 +42,6 @@ watch(
   { immediate: true },
 )
 
-// Same-domain siblings power the "Related Concepts" section. Fetched
-// lazily and cached by the domains store, so revisiting a domain is free.
 watch(
   () => props.domainSlug,
   (slug) => {
@@ -48,8 +52,6 @@ watch(
 
 const relatedConcepts = computed<ConceptSummary[]>(() => {
   const siblings = domainsStore.conceptsBySlug[props.domainSlug] ?? []
-  // Hide the current concept and any chip already shown above as a prereq
-  // or next step — otherwise the same title would appear twice in the modal.
   const exclude = new Set<string>([
     props.concept.slug,
     ...props.concept.prerequisites.map((p) => p.slug),
@@ -99,7 +101,7 @@ function onBackdropClick(e: MouseEvent) {
         <button
           type="button"
           class="inline-flex size-10 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-slate-50 sm:absolute sm:end-4 sm:top-4 sm:size-9"
-          aria-label="بستن"
+          :aria-label="t('concept.close')"
           @click="emit('close')"
         >
           <X class="size-5" :stroke-width="2.25" aria-hidden="true" />
@@ -115,8 +117,8 @@ function onBackdropClick(e: MouseEvent) {
       <div class="mt-4 flex flex-wrap items-center gap-2">
         <button
           type="button"
-          :title="isRead ? 'علامت‌گذاری به عنوان نخوانده' : 'علامت‌گذاری به عنوان خوانده‌شده'"
-          :aria-label="isRead ? 'علامت‌گذاری به عنوان نخوانده' : 'علامت‌گذاری به عنوان خوانده‌شده'"
+          :title="isRead ? t('concept.unread') : t('concept.read')"
+          :aria-label="isRead ? t('concept.unread') : t('concept.read')"
           :aria-pressed="isRead"
           :class="[
             'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300',
@@ -127,13 +129,13 @@ function onBackdropClick(e: MouseEvent) {
           @click="toggleRead"
         >
           <Check :class="['size-4 transition', isRead ? 'opacity-100' : 'opacity-60']" :stroke-width="2.5" aria-hidden="true" />
-          <span>{{ isRead ? 'خوانده‌ شد' : 'علامت‌گذاری به عنوان خوانده‌شده' }}</span>
+          <span>{{ isRead ? t('concept.read_done') : t('concept.read') }}</span>
         </button>
 
         <button
           type="button"
-          :title="isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'افزودن به ذخیره‌شده‌ها'"
-          :aria-label="isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'افزودن به ذخیره‌شده‌ها'"
+          :title="isBookmarked ? t('concept.remove_from_shelf') : t('concept.add_to_shelf')"
+          :aria-label="isBookmarked ? t('concept.remove_from_shelf') : t('concept.add_to_shelf')"
           :aria-pressed="isBookmarked"
           :class="[
             'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300',
@@ -149,7 +151,7 @@ function onBackdropClick(e: MouseEvent) {
             :fill="isBookmarked ? 'currentColor' : 'none'"
             aria-hidden="true"
           />
-          <span>{{ isBookmarked ? 'ذخیره شد' : 'ذخیره برای بعد' }}</span>
+          <span>{{ isBookmarked ? t('concept.saved') : t('concept.save_for_later') }}</span>
         </button>
       </div>
 
@@ -165,7 +167,7 @@ function onBackdropClick(e: MouseEvent) {
           aria-controls="concept-extended-content"
           @click="showExtended = !showExtended"
         >
-          <span>{{ showExtended ? 'بستن متن کامل' : 'بیشتر بخوانید' }}</span>
+          <span>{{ showExtended ? t('concept.close_full_text') : t('concept.read_more') }}</span>
           <svg
             :class="['size-4 transition-transform duration-300 ease-out', showExtended ? 'rotate-180' : '']"
             viewBox="0 0 20 20"
@@ -200,12 +202,12 @@ function onBackdropClick(e: MouseEvent) {
       </div>
 
       <section class="mt-6 border-t border-slate-200 pt-6 dark:border-white/10">
-        <h3 class="mb-3 text-base font-bold text-slate-800 dark:text-slate-100">مطالعه عمیق</h3>
+        <h3 class="mb-3 text-base font-bold text-slate-800 dark:text-slate-100">{{ t('concept.deep_dive') }}</h3>
         <ResourceList :resources="concept.resources" />
       </section>
 
       <section v-if="concept.prerequisites.length" class="mt-6">
-        <h4 class="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">پیش‌نیازها</h4>
+        <h4 class="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">{{ t('concept.prerequisites') }}</h4>
         <div class="flex flex-wrap gap-2">
           <button
             v-for="p in concept.prerequisites"
@@ -220,7 +222,7 @@ function onBackdropClick(e: MouseEvent) {
       </section>
 
       <section v-if="concept.next_steps.length" class="mt-4">
-        <h4 class="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">گام‌های بعدی</h4>
+        <h4 class="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">{{ t('concept.next_steps') }}</h4>
         <div class="flex flex-wrap gap-2">
           <button
             v-for="n in concept.next_steps"
@@ -229,7 +231,7 @@ function onBackdropClick(e: MouseEvent) {
             :class="chipClass(n)"
             @click="emit('navigate', n.slug)"
           >
-            {{ n.title }} ←
+            {{ n.title }} {{ forwardArrow }}
           </button>
         </div>
       </section>
@@ -237,7 +239,7 @@ function onBackdropClick(e: MouseEvent) {
       <section v-if="relatedConcepts.length" class="mt-4">
         <h4 class="mb-2 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300">
           <Sparkles class="size-3.5 text-fuchsia-500 dark:text-fuchsia-300" :stroke-width="2.5" aria-hidden="true" />
-          مفاهیم مرتبط
+          {{ t('concept.related') }}
         </h4>
         <div class="flex flex-wrap gap-2">
           <button
@@ -252,11 +254,11 @@ function onBackdropClick(e: MouseEvent) {
         </div>
       </section>
 
-      <!-- View count: bottom-start corner (right side in RTL), muted so it
-           reads as ambient metadata rather than competing with content. -->
+      <!-- View count: bottom-start corner, muted so it reads as ambient
+           metadata rather than competing with content. -->
       <div
         class="mt-8 flex items-center justify-start border-t border-slate-100 pt-4 text-xs text-slate-400 dark:border-white/10 dark:text-slate-500"
-        :title="`${toPersianDigits(concept.views_count)} بازدید`"
+        :title="`${toPersianDigits(concept.views_count)} ${t('concept.views')}`"
       >
         <span class="inline-flex items-center gap-1.5">
           <Eye class="size-3.5" :stroke-width="2" aria-hidden="true" />
@@ -264,7 +266,7 @@ function onBackdropClick(e: MouseEvent) {
             <span :key="concept.views_count" class="anim-count-pop inline-block">
               {{ toPersianDigits(concept.views_count) }}
             </span>
-            <span class="ms-1">بازدید</span>
+            <span class="ms-1">{{ t('concept.views') }}</span>
           </span>
         </span>
       </div>

@@ -1,16 +1,31 @@
 import axios from "axios";
 import { getDeviceId } from "@/lib/device";
+import { LOCALE_STORAGE_KEY, i18n } from "@/i18n";
 
 export const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1",
   headers: { Accept: "application/vnd.api+json, application/json" },
 });
 
-// Attach the device id on every request so per-user endpoints (activities,
-// future progress) can scope data without an auth layer.
+// Reads the active locale at request time so the very first call (before the
+// Pinia store mounts) and all subsequent calls send the same X-Locale value.
+function currentLocale(): string {
+  try {
+    const fromStorage = localStorage.getItem(LOCALE_STORAGE_KEY);
+    if (fromStorage === "fa" || fromStorage === "en") return fromStorage;
+  } catch {
+    /* private mode — fall through */
+  }
+  return (i18n.global.locale.value as string) || "fa";
+}
+
 http.interceptors.request.use((config) => {
   config.headers = config.headers ?? {};
   config.headers["X-Device-Id"] = getDeviceId();
+  // Backend negotiates locale on every request — sending it explicitly here
+  // means the user can flip languages mid-session and the next fetch lands
+  // in the new locale without any per-store reset.
+  config.headers["X-Locale"] = currentLocale();
   return config;
 });
 

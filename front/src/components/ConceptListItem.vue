@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Bookmark, Check } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia'
 import type { ConceptSummary, DifficultyLevel } from '@/types'
 import { useLibraryStore } from '@/stores/library'
+import { useLocaleStore } from '@/stores/locale'
 import DifficultyBadge from './DifficultyBadge.vue'
 
 const props = defineProps<{
@@ -12,6 +15,10 @@ const props = defineProps<{
   domainName: string
 }>()
 defineEmits<{ (e: 'open', slug: string): void }>()
+
+const { t } = useI18n()
+const { isRtl } = storeToRefs(useLocaleStore())
+const directionalArrow = computed(() => (isRtl.value ? '←' : '→'))
 
 type Tones = { node: string; ring: string; stripe: string }
 const TONES: Record<DifficultyLevel, Tones> = {
@@ -80,25 +87,25 @@ function toggleBookmark() {
             <span
               v-if="isRead"
               class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 sm:text-xs"
-              title="این مفهوم را خوانده‌اید"
+              :title="t('concept.marked_read')"
             >
               <Check class="size-3" :stroke-width="3" aria-hidden="true" />
-              خوانده‌ شد
+              {{ t('concept.read_done') }}
             </span>
           </div>
           <p v-if="concept.brief_summary" class="mt-2 text-xs leading-6 text-slate-600 dark:text-slate-400 sm:text-sm sm:leading-7">
             {{ concept.brief_summary }}
           </p>
           <div class="mt-2 text-[11px] font-medium text-sky-700 opacity-100 transition-opacity duration-200 group-hover:opacity-100 dark:text-sky-300 sm:mt-3 sm:text-xs sm:opacity-0">
-            جزئیات مفهوم ←
+            {{ t('domain.concept_details') }} {{ directionalArrow }}
           </div>
         </div>
       </button>
 
       <button
         type="button"
-        :title="isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'افزودن به ذخیره‌شده‌ها'"
-        :aria-label="isBookmarked ? 'حذف از ذخیره‌شده‌ها' : 'افزودن به ذخیره‌شده‌ها'"
+        :title="isBookmarked ? t('concept.remove_from_shelf') : t('concept.add_to_shelf')"
+        :aria-label="isBookmarked ? t('concept.remove_from_shelf') : t('concept.add_to_shelf')"
         :aria-pressed="isBookmarked"
         :class="[
           'absolute end-2 top-2 inline-flex size-10 items-center justify-center rounded-full border transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 sm:end-3 sm:top-3 sm:size-9',

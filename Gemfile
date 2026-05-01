@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0.5"
+gem "rails", "~> 8.1.3"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
@@ -41,6 +41,9 @@ gem "jsonapi-serializer"
 # Pretty URL slugs with history + Persian transliteration
 gem "friendly_id", "~> 5.5"
 gem "babosa"
+
+# Per-locale translations for model attributes (title, summaries, ...)
+gem "mobility", "~> 1.3"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

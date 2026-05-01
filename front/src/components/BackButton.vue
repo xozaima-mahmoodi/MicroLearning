@@ -1,8 +1,19 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute, useRouter, type LocationQueryRaw } from 'vue-router'
-import { ArrowRight } from 'lucide-vue-next'
+import { ArrowRight, ArrowLeft } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia'
+import { useLocaleStore } from '@/stores/locale'
 
-withDefaults(defineProps<{ label?: string }>(), { label: 'بازگشت' })
+const props = withDefaults(defineProps<{ label?: string }>(), { label: '' })
+const { t } = useI18n()
+const { isRtl } = storeToRefs(useLocaleStore())
+
+const labelText = computed(() => props.label || t('nav.back'))
+// In RTL the right-pointing chevron visually leads back to the previous
+// page; in LTR the left-pointing one does the same. Pick by direction.
+const Icon = computed(() => (isRtl.value ? ArrowRight : ArrowLeft))
 
 const route = useRoute()
 const router = useRouter()
@@ -42,11 +53,11 @@ function goBack() {
 <template>
   <button
     type="button"
-    :aria-label="label"
+    :aria-label="labelText"
     class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-sky-400 hover:bg-sky-50 hover:text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:shadow-black/30 dark:hover:border-sky-400/60 dark:hover:bg-sky-400/10 dark:hover:text-sky-300"
     @click="goBack"
   >
-    <ArrowRight class="size-4" :stroke-width="2.25" aria-hidden="true" />
-    <span>{{ label }}</span>
+    <component :is="Icon" class="size-4" :stroke-width="2.25" aria-hidden="true" />
+    <span>{{ labelText }}</span>
   </button>
 </template>

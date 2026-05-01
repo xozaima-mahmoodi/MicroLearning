@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useDomainsStore } from '@/stores/domains'
 import { useConceptsStore } from '@/stores/concepts'
 import type { Concept, ConceptSummary, Domain } from '@/types'
@@ -10,6 +11,7 @@ import LoadingState from '@/components/LoadingState.vue'
 
 const props = defineProps<{ slug: string }>()
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const domainsStore = useDomainsStore()
@@ -41,23 +43,15 @@ async function loadConcept(slug: string) {
 }
 
 function openConcept(slug: string) {
-  // push: opening a modal creates a new history entry so the
-  // physical browser-back key (and the hierarchical BackButton)
-  // can close the modal as a distinct step.
   router.push({ query: { ...route.query, concept: slug } })
 }
 
 function closeConcept() {
-  // replace: closing must not add a second history entry; otherwise
-  // pressing Back would walk into the prior `?concept=` URL and
-  // re-open the modal.
   const { concept: _omit, ...rest } = route.query
   router.replace({ query: rest })
 }
 
 function navigateConcept(slug: string) {
-  // replace: chip-driven navigation between concepts swaps modal
-  // contents in place rather than stacking each one in history.
   router.replace({ query: { ...route.query, concept: slug } })
 }
 
@@ -82,7 +76,7 @@ watch(() => props.slug, async () => {
 <template>
   <section>
     <nav class="mb-4 text-sm text-slate-500 dark:text-slate-400">
-      <RouterLink to="/" class="hover:text-sky-700 dark:hover:text-sky-300">خانه</RouterLink>
+      <RouterLink to="/" class="hover:text-sky-700 dark:hover:text-sky-300">{{ t('nav.home') }}</RouterLink>
       <span class="mx-2">/</span>
       <span class="dark:text-slate-300">{{ domain?.name ?? slug }}</span>
     </nav>
@@ -96,7 +90,8 @@ watch(() => props.slug, async () => {
 
     <ol v-else-if="concepts.length" class="relative">
       <!-- Rail centerline matches the timeline-node column: 1rem (size-8/2)
-           on mobile, 1.25rem (size-10/2) on sm+. -->
+           on mobile, 1.25rem (size-10/2) on sm+. Logical-property `start`
+           anchors the rail correctly in both LTR and RTL. -->
       <div
         class="absolute top-8 bottom-8 w-0.5 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-200 start-[calc(1rem-1px)] dark:from-white/10 dark:via-white/15 dark:to-white/10 sm:top-10 sm:bottom-10 sm:start-[calc(1.25rem-1px)]"
         aria-hidden="true"
@@ -113,7 +108,7 @@ watch(() => props.slug, async () => {
     </ol>
 
     <div v-else class="rounded-xl border border-dashed border-slate-300 p-8 text-center text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-400">
-      هنوز مفهومی در این حوزه ثبت نشده است.
+      {{ t('domain.empty_concepts') }}
     </div>
 
     <ConceptModal
