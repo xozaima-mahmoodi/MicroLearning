@@ -1,6 +1,11 @@
 class Concept < ApplicationRecord
   extend FriendlyId
+  extend Mobility
   include PersianSluggable
+
+  translates :title,            type: :string
+  translates :brief_summary,    type: :text
+  translates :extended_content, type: :text
 
   friendly_id :title, use: [ :slugged, :history ]
 

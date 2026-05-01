@@ -2,10 +2,13 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { CheckCircle2, Layers } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia'
 import type { Domain } from '@/types'
 import { paletteFor, iconFor } from '@/lib/palette'
 import { useConceptsStore } from '@/stores/concepts'
 import { useLibraryStore } from '@/stores/library'
+import { useLocaleStore } from '@/stores/locale'
 import { toPersianDigits } from '@/lib/numerals'
 
 const props = defineProps<{
@@ -13,6 +16,10 @@ const props = defineProps<{
   categorySlug?: string | null
   index?: number
 }>()
+
+const { t } = useI18n()
+const { isRtl } = storeToRefs(useLocaleStore())
+const directionalArrow = computed(() => (isRtl.value ? '←' : '→'))
 
 const linkTo = computed(() => ({
   name: 'domain' as const,
@@ -28,7 +35,7 @@ const library = useLibraryStore()
 
 // Slug list for this domain — derived from the global search index that
 // HomeView fetches once. Empty until the index lands; the progress block
-// hides itself in that case so we don't render misleading "0 از 0".
+// hides itself in that case so we don't render misleading "0 of 0".
 const domainConceptSlugs = computed(() => {
   return conceptsStore.searchIndex
     .filter((c) => c.domain_slug === props.domain.slug)
@@ -59,17 +66,18 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
     ]"
   >
     <!-- Concept-count badge: glassmorphism pill in the top-end corner.
-         Persian digits + "مفهوم". Hidden if seeds report zero.
-         On phones we drop the "مفهوم" suffix to keep the badge compact. -->
+         Logical end/top placement so it sits in the correct corner
+         in both LTR and RTL. The "concepts" suffix is dropped on
+         phones to keep the badge compact. -->
     <span
       v-if="domain.concepts_count > 0"
       class="absolute end-2.5 top-2.5 inline-flex items-center gap-1 rounded-full border border-white/60 bg-white/70 px-2 py-0.5 text-[10px] font-semibold text-slate-700 shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:text-slate-200 sm:end-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[11px]"
-      :title="`${toPersianDigits(domain.concepts_count)} مفهوم`"
-      :aria-label="`${toPersianDigits(domain.concepts_count)} مفهوم`"
+      :title="t('domain.concepts_count_aria', { count: toPersianDigits(domain.concepts_count) })"
+      :aria-label="t('domain.concepts_count_aria', { count: toPersianDigits(domain.concepts_count) })"
     >
       <Layers class="size-3" :stroke-width="2.5" aria-hidden="true" />
       <span class="tabular-nums">{{ toPersianDigits(domain.concepts_count) }}</span>
-      <span class="hidden sm:inline">مفهوم</span>
+      <span class="hidden sm:inline">{{ t('home.concepts_count_suffix') }}</span>
     </span>
 
     <div class="flex items-start gap-3 sm:gap-4">
@@ -103,7 +111,7 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
       <div class="flex items-center justify-between text-xs font-medium">
         <span :class="isComplete ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-500 dark:text-slate-400'">
           <CheckCircle2 v-if="isComplete" class="me-1 inline size-3.5" :stroke-width="2.5" aria-hidden="true" />
-          {{ toPersianDigits(readCount) }} از {{ toPersianDigits(totalConcepts) }} مفهوم خوانده شده
+          {{ t('domain.read_progress', { read: toPersianDigits(readCount), total: toPersianDigits(totalConcepts) }) }}
         </span>
         <span :class="['font-semibold tabular-nums', isComplete ? 'text-emerald-700 dark:text-emerald-300' : palette.accentText]">
           {{ toPersianDigits(progressPercent) }}٪
@@ -127,7 +135,7 @@ const animationDelay = computed(() => `${(props.index ?? 0) * 70}ms`)
         palette.accentText,
       ]"
     >
-      مشاهده مفاهیم ←
+      {{ t('domain.view_concepts') }} {{ directionalArrow }}
     </div>
   </RouterLink>
 </template>

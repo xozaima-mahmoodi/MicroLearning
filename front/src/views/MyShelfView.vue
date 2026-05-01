@@ -3,14 +3,18 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Bookmark, BookmarkX, Check } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 import { useLibraryStore } from '@/stores/library'
+import { useLocaleStore } from '@/stores/locale'
 import { toPersianDigits } from '@/lib/numerals'
 import DifficultyBadge from '@/components/DifficultyBadge.vue'
 import ActivityCalendar from '@/components/ActivityCalendar.vue'
 
+const { t } = useI18n()
 const router = useRouter()
 const library = useLibraryStore()
 const { bookmarksSorted } = storeToRefs(library)
+const { current: localeRef } = storeToRefs(useLocaleStore())
 
 const stagger = (i: number) => `${i * 60}ms`
 
@@ -43,9 +47,12 @@ function remove(slug: string) {
 
 function formatDate(ts: number): string {
   const d = new Date(ts)
-  // Persian (Iran) locale gives a Jalali-friendly date string.
+  // Persian (Iran) gives a Jalali-friendly date string; English uses the
+  // Gregorian long form. Persian digits are applied only when the active
+  // locale is FA (toPersianDigits is a no-op in EN).
+  const tag = localeRef.value === 'fa' ? 'fa-IR' : 'en-US'
   return toPersianDigits(
-    d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' }),
+    d.toLocaleDateString(tag, { year: 'numeric', month: 'long', day: 'numeric' }),
   )
 }
 </script>
@@ -55,13 +62,13 @@ function formatDate(ts: number): string {
     <div class="anim-fade-in-up mb-8 text-center md:mb-12 md:text-start">
       <div class="mb-3 inline-flex items-center justify-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
         <Bookmark class="size-3.5" :stroke-width="2.5" :fill="'currentColor'" aria-hidden="true" />
-        <span>قفسه‌ی شخصی شما</span>
+        <span>{{ t('shelf.badge') }}</span>
       </div>
       <h1 class="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl md:text-5xl">
-        قفسه من
+        {{ t('shelf.title') }}
       </h1>
       <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-400 sm:text-base sm:leading-8 md:mx-0 md:text-lg">
-        مفاهیمی که ذخیره کرده‌اید تا بعداً بازگردید و عمیق‌تر مطالعه کنید.
+        {{ t('shelf.subtitle') }}
       </p>
 
       <div
@@ -70,11 +77,11 @@ function formatDate(ts: number): string {
       >
         <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/70 px-3 py-1 font-medium backdrop-blur-sm dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
           <Bookmark class="size-3.5 text-amber-600 dark:text-amber-300" :stroke-width="2.5" :fill="'currentColor'" aria-hidden="true" />
-          {{ toPersianDigits(totalCount) }} مفهوم ذخیره‌شده
+          {{ t('shelf.saved_count', { count: toPersianDigits(totalCount) }) }}
         </span>
         <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-medium text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300">
           <Check class="size-3.5" :stroke-width="3" aria-hidden="true" />
-          {{ toPersianDigits(readInShelfCount) }} از {{ toPersianDigits(totalCount) }} خوانده‌ شده
+          {{ t('shelf.read_progress', { read: toPersianDigits(readInShelfCount), total: toPersianDigits(totalCount) }) }}
         </span>
       </div>
     </div>
@@ -93,16 +100,15 @@ function formatDate(ts: number): string {
       <div class="mx-auto flex size-14 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-400/15">
         <BookmarkX class="size-7 text-amber-600 dark:text-amber-300" :stroke-width="2" aria-hidden="true" />
       </div>
-      <p class="mt-4 text-base font-semibold text-slate-700 dark:text-slate-200">قفسه‌ی شما خالی است</p>
+      <p class="mt-4 text-base font-semibold text-slate-700 dark:text-slate-200">{{ t('shelf.empty_title') }}</p>
       <p class="mt-1 text-sm leading-7 text-slate-500 dark:text-slate-400">
-        روی آیکون <span class="inline-flex translate-y-0.5 px-0.5"><Bookmark class="size-3.5 text-amber-600 dark:text-amber-300" :stroke-width="2.5" /></span>
-        کنار هر مفهوم بزنید تا اینجا ذخیره شود.
+        {{ t('shelf.empty_hint_html') }}
       </p>
       <RouterLink
         to="/"
         class="mt-5 inline-flex items-center gap-2 rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-300 dark:bg-amber-500/90 dark:hover:bg-amber-500"
       >
-        کاوش در دسته‌ها
+        {{ t('shelf.explore') }}
       </RouterLink>
     </div>
 
@@ -142,22 +148,22 @@ function formatDate(ts: number): string {
                 class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 sm:text-xs"
               >
                 <Check class="size-3" :stroke-width="3" aria-hidden="true" />
-                خوانده‌ شد
+                {{ t('concept.read_done') }}
               </span>
             </div>
             <p v-if="b.brief_summary" class="mt-2 text-xs leading-6 text-slate-600 dark:text-slate-400 sm:text-sm sm:leading-7">
               {{ b.brief_summary }}
             </p>
             <div class="mt-2 text-[11px] text-slate-400 dark:text-slate-500 sm:mt-3 sm:text-xs">
-              ذخیره‌شده در {{ formatDate(b.saved_at) }}
+              {{ t('shelf.saved_at', { date: formatDate(b.saved_at) }) }}
             </div>
           </div>
         </button>
 
         <button
           type="button"
-          title="حذف از ذخیره‌شده‌ها"
-          aria-label="حذف از ذخیره‌شده‌ها"
+          :title="t('concept.remove_from_shelf')"
+          :aria-label="t('concept.remove_from_shelf')"
           class="absolute end-2 top-2 inline-flex size-10 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-amber-600 transition duration-200 hover:bg-amber-100 hover:text-amber-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 dark:border-amber-400/40 dark:bg-amber-400/15 dark:text-amber-300 dark:hover:bg-amber-400/25 sm:end-3 sm:top-3 sm:size-9"
           @click.stop="remove(b.slug)"
         >

@@ -55,7 +55,7 @@ module Api
       end
 
       def render_missing_device
-        render json: { errors: [ { status: "400", title: "Missing X-Device-Id header" } ] },
+        render json: { errors: [ { status: "400", title: I18n.t("api.errors.missing_device") } ] },
                status: :bad_request
       end
 

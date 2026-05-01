@@ -15,7 +15,6 @@ RSpec.describe Category, type: :model do
     subject { build(:category) }
 
     it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_uniqueness_of(:title) }
 
     it "auto-generates a slug from the title" do
       category = create(:category, title: "Hadith Sciences")

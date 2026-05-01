@@ -4,6 +4,11 @@
 # below upserts categories, domains and concepts, then wires up a prerequisite
 # chain (each concept becomes the prereq of the next within its domain).
 # Re-runs are safe; db:seed:replant truncates first if you want a clean slate.
+#
+# Translations: every Persian field is written under :fa via Mobility. If a
+# bundle includes an `i18n: { en: { ... } }` block, those values are written
+# under :en too. Bundles without an :en block fall back to :fa per the
+# Mobility fallback chain configured in config/initializers/mobility.rb.
 
 module SeedData; end
 
@@ -21,9 +26,18 @@ CATEGORY_BUNDLES = [
   SeedData::Interdisciplinary
 ].freeze
 
+# Writes a translated attribute under :fa, then under :en if an English
+# value is provided. The model is not saved here — callers persist once
+# all attributes have been assigned across both locales.
+def assign_translated!(record, attribute, fa_value, en_value)
+  Mobility.with_locale(:fa) { record.public_send("#{attribute}=", fa_value) } if fa_value
+  Mobility.with_locale(:en) { record.public_send("#{attribute}=", en_value) } if en_value
+end
+
 def upsert_category!(data)
   category = Category.find_or_initialize_by(slug: data[:slug])
-  category.title    = data[:title]
+  en = data.dig(:i18n, :en) || {}
+  assign_translated!(category, :title, data[:title], en[:title])
   category.position = data[:position]
   category.color    = data[:color]
   category.icon     = data[:icon]
@@ -33,24 +47,26 @@ end
 
 def upsert_domain!(data, category)
   domain = Domain.find_or_initialize_by(slug: data[:slug])
-  domain.name        = data[:name]
-  domain.description = data[:description]
-  domain.position    = data[:position]
-  domain.color       = data[:color]
-  domain.icon        = data[:icon]
-  domain.category    = category
+  en = data.dig(:i18n, :en) || {}
+  assign_translated!(domain, :name,        data[:name],        en[:name])
+  assign_translated!(domain, :description, data[:description], en[:description])
+  domain.position = data[:position]
+  domain.color    = data[:color]
+  domain.icon     = data[:icon]
+  domain.category = category
   domain.save!
   domain
 end
 
 def upsert_concept!(data, domain, idx)
   concept = Concept.find_or_initialize_by(slug: data[:slug])
+  en = data.dig(:i18n, :en) || {}
+  assign_translated!(concept, :title,            data[:title],            en[:title])
+  assign_translated!(concept, :brief_summary,    data[:brief_summary],    en[:brief_summary])
+  assign_translated!(concept, :extended_content, data[:extended_content], en[:extended_content])
   concept.domain           = domain
-  concept.title            = data[:title]
   concept.difficulty_level = data[:difficulty_level]
   concept.position         = idx
-  concept.brief_summary    = data[:brief_summary]
-  concept.extended_content = data[:extended_content]
   concept.save!
   concept
 end

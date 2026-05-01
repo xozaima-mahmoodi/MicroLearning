@@ -1,0 +1,99 @@
+{
+  "app": {
+    "motto_short": "یادگیری خرد",
+    "motto_full": "یادگیری خرد؛ برای ذهنی که می‌خواهد کلان ببیند",
+    "footer": "هوشمندانه‌تر بیاموز"
+  },
+  "nav": {
+    "home": "خانه",
+    "my_shelf": "قفسه من",
+    "main_navigation": "ناوبری اصلی",
+    "switch_to_dark": "تغییر به حالت شب",
+    "switch_to_light": "تغییر به حالت روشن",
+    "your_personal_shelf": "قفسه‌ی شخصی شما",
+    "back": "بازگشت",
+    "switch_language": "تغییر زبان"
+  },
+  "home": {
+    "title": "میکرولرنینگ",
+    "subtitle": "نقشه‌ی راه تو در دنیای دانش",
+    "no_results_title": "مفهومی با این عنوان پیدا نشد",
+    "no_results_hint": "عبارت دیگری امتحان کنید یا املای کلمه را بررسی کنید.",
+    "empty_categories": "هنوز دسته‌ای ثبت نشده است.",
+    "empty_domains": "هنوز حوزه‌ای در این دسته ثبت نشده است.",
+    "matched_in_concepts": "یافته‌ها در مفاهیم: ",
+    "domains_count": "{count} حوزه",
+    "concepts_count_suffix": "مفهوم"
+  },
+  "domain": {
+    "view_concepts": "مشاهده مفاهیم",
+    "concept_details": "جزئیات مفهوم",
+    "read_progress": "{read} از {total} مفهوم خوانده شده",
+    "empty_concepts": "هنوز مفهومی در این حوزه ثبت نشده است.",
+    "concepts_count_aria": "{count} مفهوم"
+  },
+  "concept": {
+    "read": "علامت‌گذاری به عنوان خوانده‌شده",
+    "unread": "علامت‌گذاری به عنوان نخوانده",
+    "read_done": "خوانده‌ شد",
+    "save_for_later": "ذخیره برای بعد",
+    "saved": "ذخیره شد",
+    "remove_from_shelf": "حذف از ذخیره‌شده‌ها",
+    "add_to_shelf": "افزودن به ذخیره‌شده‌ها",
+    "read_more": "بیشتر بخوانید",
+    "close_full_text": "بستن متن کامل",
+    "deep_dive": "مطالعه عمیق",
+    "prerequisites": "پیش‌نیازها",
+    "next_steps": "گام‌های بعدی",
+    "related": "مفاهیم مرتبط",
+    "views": "بازدید",
+    "close": "بستن",
+    "marked_read": "این مفهوم را خوانده‌اید"
+  },
+  "difficulty": {
+    "beginner": "مقدماتی",
+    "intermediate": "متوسط",
+    "advanced": "پیشرفته",
+    "expert": "حرفه‌ای"
+  },
+  "resource": {
+    "empty": "هنوز منبعی ثبت نشده است.",
+    "type": {
+      "book": "کتاب",
+      "article": "مقاله",
+      "video": "ویدیو",
+      "course": "دوره",
+      "paper": "پژوهش"
+    }
+  },
+  "shelf": {
+    "badge": "قفسه‌ی شخصی شما",
+    "title": "قفسه من",
+    "subtitle": "مفاهیمی که ذخیره کرده‌اید تا بعداً بازگردید و عمیق‌تر مطالعه کنید.",
+    "saved_count": "{count} مفهوم ذخیره‌شده",
+    "read_progress": "{read} از {total} خوانده‌ شده",
+    "empty_title": "قفسه‌ی شما خالی است",
+    "empty_hint_html": "روی آیکون نشان‌گذاری کنار هر مفهوم بزنید تا اینجا ذخیره شود.",
+    "explore": "کاوش در دسته‌ها",
+    "saved_at": "ذخیره‌شده در {date}"
+  },
+  "activity": {
+    "title": "تقویم فعالیت",
+    "loading": "در حال بارگذاری…",
+    "empty": "هنوز فعالیتی ثبت نشده است. مفهومی را به‌عنوان «خوانده‌شد» علامت بزنید تا اینجا نمایان شود.",
+    "concepts_studied": "{count} مفهوم مطالعه‌شده",
+    "longest_streak": "طولانی‌ترین زنجیره: {days} روز",
+    "current_streak": "زنجیره فعلی: {days} روز",
+    "less": "کمتر",
+    "more": "بیشتر",
+    "concepts_on_day": "{count} مفهوم مطالعه‌شده",
+    "no_activity": "بدون فعالیت"
+  },
+  "search": {
+    "placeholder": "جستجو در دسته‌ها، حوزه‌ها و مفاهیم…",
+    "clear": "پاک‌سازی جستجو"
+  },
+  "loading": {
+    "default": "دانش بزرگ، در گام‌های کوچک"
+  }
+}

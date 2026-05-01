@@ -1,0 +1,99 @@
+{
+  "app": {
+    "motto_short": "Micro-Learning",
+    "motto_full": "Micro-Learning — for a mind that wants to see the big picture",
+    "footer": "Learn smarter"
+  },
+  "nav": {
+    "home": "Home",
+    "my_shelf": "My Shelf",
+    "main_navigation": "Main navigation",
+    "switch_to_dark": "Switch to dark mode",
+    "switch_to_light": "Switch to light mode",
+    "your_personal_shelf": "Your personal shelf",
+    "back": "Back",
+    "switch_language": "Switch language"
+  },
+  "home": {
+    "title": "Micro-Learning",
+    "subtitle": "Your roadmap through the world of knowledge",
+    "no_results_title": "No matching concept found",
+    "no_results_hint": "Try a different phrase or check the spelling.",
+    "empty_categories": "No categories have been added yet.",
+    "empty_domains": "No domains have been added to this category yet.",
+    "matched_in_concepts": "Matches in concepts: ",
+    "domains_count": "{count} domains",
+    "concepts_count_suffix": "concepts"
+  },
+  "domain": {
+    "view_concepts": "View concepts",
+    "concept_details": "Concept details",
+    "read_progress": "{read} of {total} concepts read",
+    "empty_concepts": "No concepts have been added to this domain yet.",
+    "concepts_count_aria": "{count} concepts"
+  },
+  "concept": {
+    "read": "Mark as read",
+    "unread": "Mark as unread",
+    "read_done": "Read",
+    "save_for_later": "Save for later",
+    "saved": "Saved",
+    "remove_from_shelf": "Remove from shelf",
+    "add_to_shelf": "Add to shelf",
+    "read_more": "Read more",
+    "close_full_text": "Close full text",
+    "deep_dive": "Deep dive",
+    "prerequisites": "Prerequisites",
+    "next_steps": "Next steps",
+    "related": "Related concepts",
+    "views": "views",
+    "close": "Close",
+    "marked_read": "You have read this concept"
+  },
+  "difficulty": {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "expert": "Expert"
+  },
+  "resource": {
+    "empty": "No resources have been added yet.",
+    "type": {
+      "book": "Book",
+      "article": "Article",
+      "video": "Video",
+      "course": "Course",
+      "paper": "Paper"
+    }
+  },
+  "shelf": {
+    "badge": "Your personal shelf",
+    "title": "My Shelf",
+    "subtitle": "Concepts you have saved to revisit and study in more depth.",
+    "saved_count": "{count} saved concepts",
+    "read_progress": "{read} of {total} read",
+    "empty_title": "Your shelf is empty",
+    "empty_hint_html": "Tap the bookmark icon next to a concept to save it here.",
+    "explore": "Explore categories",
+    "saved_at": "Saved on {date}"
+  },
+  "activity": {
+    "title": "Activity calendar",
+    "loading": "Loading…",
+    "empty": "No activity yet. Mark a concept as read to see it appear here.",
+    "concepts_studied": "{count} concepts studied",
+    "longest_streak": "Longest streak: {days} days",
+    "current_streak": "Current streak: {days} days",
+    "less": "Less",
+    "more": "More",
+    "concepts_on_day": "{count} concepts studied",
+    "no_activity": "No activity"
+  },
+  "search": {
+    "placeholder": "Search categories, domains, and concepts…",
+    "clear": "Clear search"
+  },
+  "loading": {
+    "default": "Big knowledge, in small steps"
+  }
+}
