@@ -39,7 +39,7 @@ gem "rack-cors"
 gem "jsonapi-serializer"
 
 # Pretty URL slugs with history + Persian transliteration
-gem "friendly_id", "~> 5.5"
+gem "friendly_id", "~> 5.7"
 gem "babosa"
 
 group :development, :test do
